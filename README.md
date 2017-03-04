@@ -1,18 +1,28 @@
-# Whiteboard
-电子白板
+﻿# Whiteboard   电子白板 1.0
+---
+[TOC]
 
-##开发工具：
-SublimeText 3
+##开发工具 
 
-##学会用Sublime 编写 README.md
-安装MarkdownEditing，OmniMarkupPreviewer 两个插件
+- SublimeText 3
+- Eclipse
 
-可以实现markdown**语法高亮**，以及**实时预览**：(使用快捷键 (OSX ⌘+⌥+O; Windows, Linux Ctrl+Alt+O) 来预览。)
 
-![图片](http://upload-images.jianshu.io/upload_images/222358-d8421f8682fdd2a4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240 "插入图片")
+##项目语言/框架
+- JAVA
+- Html5
 
-###具体攻略
-[近乎完美的 Markdown 写作体验 - Sublime Text 3 + OmniMarkupPreviewer](http://macplay.leanote.com/post/%E8%BF%91%E4%B9%8E%E5%AE%8C%E7%BE%8E%E7%9A%84-Markdown-%E5%86%99%E4%BD%9C%E4%BD%93%E9%AA%8C-Sublime-Text-3-OmniMarkupPreviewer)
+##项目思维导图1.0
+![流程图](https://github.com/H4N10/Whiteboard/blob/master/%E5%88%9D%E6%AD%A5%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg?raw=true)
+ 
 
-### MarkDown相关语法
-[献给写作者的 Markdown 新手指南](http://www.jianshu.com/p/q81RER)
+##需求1.0
+### 服务器端
+ - 创建服务器端口号供客户端连接（长连接）
+ - 支持区分身份（1.0版本暂定房主才可绘制图形）
+ - 支持接收消息并转发给对应房间的用户
+### 浏览器端
+ - 可选择创建房间，随机生成房间号及房主ID
+ - 可选择加入房间，随机生成访客ID
+ - 编写绘图界面，编写绘图面板，可绘制基本图形
+ - 接收服务端传来的图形信息，同步绘制在面板中
