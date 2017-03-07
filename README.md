@@ -101,6 +101,24 @@ http://www.ctolib.com/topics-103935.html
     -  View层只做页面实时的展示（展示层，包括接受到的数据版信息，用户当前实时绘制的内容）
     -  Controller（控制层，登入房间，查看房间，绘制画笔时发送数据包，接受新数据包等，作为Model和View的中间衔接）
 
+#### Html5 WebSocket
+
+看到一篇知乎专栏 [WebSocket 浅析](https://zhuanlan.zhihu.com/p/25592934)
+
+>   WebSocket API
+WebSocket 对象提供了一组 API，用于创建和管理 WebSocket 连接，以及通过连接发送和接收数据。浏览器提供的WebSocket API很简洁，调用示例如下：
+var ws = new WebSocket('wss://example.com/socket'); // 创建安全WebSocket 连接（wss）
+ ws.onerror = function (error) { ... } // 错误处理
+ ws.onclose = function () { ... } // 关闭时调用
+ ws.onopen = function () { // 连接建立时调用
+   ws.send("Connection established. Hello server!"); // 向服务端发送消息
+ }
+ ws.onmessage = function(msg) { // 接收服务端发送的消息
+   if(msg.data instanceof Blob) { // 处理二进制信息 processBlob(msg.data);
+   } else {     processText(msg.data); // 处理文本信息
+   }
+ }
+
 #### Vue.js （国产轻量类似Angularjs）
 
 > Vue.js（读音 /vjuː/, 类似于 view） 是一套构建用户界面的 渐进式框架。与其他重量级框架不同的是，Vue 采用自底向上增量开发的设计。Vue 的核心库只关注视图层，并且非常容易学习，非常容易与其它库或已有项目整合。另一方面，Vue 完全有能力驱动采用单文件组件和 Vue 生态系统支持的库开发的复杂单页应用。
