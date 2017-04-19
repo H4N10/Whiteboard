@@ -40,7 +40,7 @@
 
 ## 技术架构
 ###客户端与服务器交互示意图 
-![流程图](images/diagram-1.jpg?raw=true)
+![流程图](docs/images/diagram-1.jpg?raw=true)
 
 ### 后端架构；
 
