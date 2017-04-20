@@ -127,7 +127,7 @@ Facebook已经在多项产品中使用了React Native，并且将持续地投入
 ##开发工具 
 - SublimeText 3
 - Eclipse
-
+- IntelliJ IDEA
 
 ##项目语言
 - JAVA
