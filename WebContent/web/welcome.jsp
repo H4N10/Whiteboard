@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,8 +16,8 @@
 		<div class="site-wrapper-inner">
 			<div class="cover-container">
 					<p class="lead">
-						<a href="/room" class="btn btn-primary btn-lg">创建房间</a>
-						<a href="/room" class="btn btn-primary btn-lg">进入房间</a>
+						<button type="button" class="btn btn-primary btn-lg">创建房间</button>
+						<button type="button" class="btn btn-primary btn-lg">进入房间</button>
 					</p>
 				<div class="mastfoot">
 					<div class="inner">
