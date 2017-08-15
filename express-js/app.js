@@ -11,6 +11,9 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+//静态资源不拦截
+app.use(express.static('public'));
+
 var module = require('./module/module');
 //获取房间属性
 app.get('/rooms/getRoom', function (req, res) {
