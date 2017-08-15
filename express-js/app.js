@@ -21,7 +21,10 @@ app.get('/rooms/getRoom', function (req, res) {
     });
     res.send(room);
 });
-
+//显示demo.html
+app.get('/demo',function (req,res) {
+    res.sendfile('vue/demo.html');
+})
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
 });
