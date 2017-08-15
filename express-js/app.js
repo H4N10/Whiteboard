@@ -6,7 +6,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var fs = require('fs');
 var index = require('./routes/index');
 var users = require('./routes/users');
 
@@ -14,20 +14,20 @@ var app = express();
 //静态资源不拦截
 app.use(express.static('public'));
 
-var module = require('./module/module');
-//获取房间属性
-app.get('/rooms/getRoom', function (req, res) {
-    var room = module.createRooms({
-        id:'1',
-        name:'房间',
-        key:'a001'
+// 读取controllers文件夹下所有js文件
+function readFile(path) {
+    fs.readdirSync(path).forEach(function (file) {
+        if(file.substr(-3) == '.js') {
+            route = require(path + file);
+            route.controller(app);
+        }else{
+            readFile(path+'/'+file+'/');
+        }
+
     });
-    res.send(room);
-});
-//显示demo.html
-app.get('/demo',function (req,res) {
-    res.sendfile('vue/demo.html');
-})
+}
+readFile('./controllers');
+
 app.listen(3000, function () {
     console.log('Example app listening on port 3000!');
 });

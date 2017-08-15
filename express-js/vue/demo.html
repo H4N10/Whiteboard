@@ -11,6 +11,16 @@
 	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/vue-resource.js"></script>
 	<script type="text/javascript">
+		//Html连接webSocket demo
+        var ws = new WebSocket("ws://localhost:6001");
+        ws.onopen = function (e) {
+            console.log('Connection to server opened');
+            ws.send('哈哈哈');
+        }
+        ws.onmessage = function(evt) {
+            console.log( "Received Message: " + evt.data);
+            ws.close();
+        };
 		var vue=new Vue({
 		    el: '.roomList',
 		    methods:{
