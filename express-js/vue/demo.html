@@ -15,12 +15,9 @@
 		    el: '.roomList',
 		    methods:{
 		    	created: function() {
-			        this
-			            .$http
-			            .get('rooms/getRoom')
-			            .then((data) => {
-			                this.todos = data;
-			            })
+                    this.$http.get('rooms/getRoom').then((data) => {
+                        console.log(data);
+                    })
 			    }
 		    }
 		});
