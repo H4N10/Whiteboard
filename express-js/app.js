@@ -16,7 +16,8 @@ var module = require('./module/module');
 app.get('/rooms/getRoom', function (req, res) {
     var room = module.createRooms({
         id:'1',
-        name:'房间'
+        name:'房间',
+        key:'a001'
     });
     res.send(room);
 });
