@@ -17,7 +17,7 @@
 		    	created: function() {
 			        this
 			            .$http
-			            .get('../rooms/getRoom')
+			            .get('rooms/getRoom')
 			            .then((data) => {
 			                this.todos = data;
 			            })
