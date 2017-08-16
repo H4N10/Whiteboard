@@ -2,7 +2,7 @@
 ---
 ## IP：localhost，端口号：3000
 
-## 获取房间属性接口
+## 1.1获取房间属性接口
 
 * #### 地址：/rooms/getRoom
 
@@ -29,7 +29,7 @@
 |name | string | 房间名称 |
 |key | string |房间钥匙 |
 
-## 获取所有房间信息
+## 1.2 获取所有房间信息
 
 * #### 地址：/rooms/getRooms
 

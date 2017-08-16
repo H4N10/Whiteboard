@@ -1,11 +1,12 @@
 //房间基础操作
 var rooms = require(process.cwd()+'/models/rooms/rooms');
 var ws = require('ws');
+var util = require('util');
 var response = require(process.cwd()+'/models/result');
 
 var id = 0;
 var cons = new Array();
-
+//创建webSocket服务器
 function createServer(port) {
     var WebSocketServer = ws.Server;
     var server = new WebSocketServer({
@@ -14,13 +15,13 @@ function createServer(port) {
     });
     server.on('connection', function (socket) {
         // var userId = ws.upgradeReq.headers['userid'];
-        console.log('new connection successfully userId:'+socket);
+        // console.log(util.inspect(socket.upgradeReq, {depth: null}));
+        console.log('new connection successfully userId:' );
         cons.push(socket);
         // userArray.push(userId);
         socket.on('message', function (message) {
-            console.log(message);
-            for (var i=0; i<cons.length;i++) {
-                //判断userid是否为toUserId（发给指定的客户端）
+             for (var i=0; i<cons.length;i++) {
+                 console.log(message);                //判断userid是否为toUserId（发给指定的客户端）
                 // var msgObj = JSON.parse(message);
                 // if (userArray[i] == msgObj.toUserId) {
                     cons[i].send('徐少秋');
