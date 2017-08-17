@@ -61,7 +61,17 @@
                         if(response.body.code==200){
                         var data=response.body.data;
                         console.log(data)
-						window.location.href="room.html?room_id"+data.id+"&room_key="+data.key;
+//						window.location.href="room.html?room_id"+data.id+"&room_key="+data.key;
+                        //Html连接webSocket demo
+                        var ws = new WebSocket("ws://localhost:"+data.key);
+                        ws.onopen = function (e) {
+                            console.log('Connection to server opened');
+                            ws.send('哈哈哈');
+                        }
+                        ws.onmessage = function(evt) {
+                            console.log( "Received Message: " + evt.data);
+                            ws.close();
+                        };
                     }
                 },response =>{
                         console.log(response)
