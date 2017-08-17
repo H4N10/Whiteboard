@@ -7,12 +7,14 @@
 </head>
 <body>
     <div class="roomList">
-	    <button id="getRoomListInfoButton" @click="getRoomListInfo">获取房间列表信息</button>
 		<div class="showList">
 			<ul>
-				<!--<li v-for=""></li>-->
+				<li v-for="roomInfo in roomInfos" :id="'room_'+roomInfo.room_id">
+					<a :href="'room.html?room_id='+roomInfo.room_id+'&room_key='+roomInfo.room_key">{{roomInfo.room_name}}</a>
+				</li>
 			</ul>
 		</div>
+		<div id="getRoomListInfoButton" @click="getRoomListInfo">更新房间列表信息</div>
 		<div id="createRoom" @click="createRoom">创建房间</div>
     </div>
 	<script type="text/javascript" src="../js/vue.js"></script>
@@ -28,16 +30,42 @@
 //            console.log( "Received Message: " + evt.data);
 //            ws.close();
 //        };
+		window.onload=function(){
+		    document.getElementById("getRoomListInfoButton").click();
+		}
 		var roomList=new Vue({
 		    el: '.roomList',
+			data:{
+		        roomInfos:[]
+			},
 		    methods:{
                 getRoomListInfo: function() {
-                    this.$http.get('rooms/getRoom').then((data) => {
-                        console.log(data);
-                    })
+                    this.$http.get('../rooms/getRooms').then(response => {
+                        if(response.body.code==200){
+                            var data=response.body.data;
+                            var roomAttr=[];
+						    for(var i=0;i<data.length;i++){
+                                roomAttr[i]={};
+                                roomAttr[i].room_id=data[i].id;
+                                roomAttr[i].room_key=data[i].key;
+                                roomAttr[i].room_name=data[i].name;
+							}
+							this.roomInfos=roomAttr;
+					    }
+                    },response =>{
+                        console.log(response)
+					})
 			    },
 				createRoom:function(){
-                    alert(123)
+                    this.$http.get('../rooms/getRoom').then(response => {
+                        if(response.body.code==200){
+                        var data=response.body.data;
+                        console.log(data)
+						window.location.href="room.html?room_id"+data.id+"&room_key="+data.key;
+                    }
+                },response =>{
+                        console.log(response)
+                    })
 				}
 		    }
 		});
