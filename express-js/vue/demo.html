@@ -3,32 +3,42 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Document</title>
+	<link  rel="stylesheet" href="../css/public.css">
 </head>
 <body>
     <div class="roomList">
-	    <button id="getRoomListInfo" @click="created">获取房间列表信息</button>
+	    <button id="getRoomListInfoButton" @click="getRoomListInfo">获取房间列表信息</button>
+		<div class="showList">
+			<ul>
+				<!--<li v-for=""></li>-->
+			</ul>
+		</div>
+		<div id="createRoom" @click="createRoom">创建房间</div>
     </div>
 	<script type="text/javascript" src="../js/vue.js"></script>
 	<script type="text/javascript" src="../js/vue-resource.js"></script>
 	<script type="text/javascript">
 		//Html连接webSocket demo
-        var ws = new WebSocket("ws://localhost:6001");
-        ws.onopen = function (e) {
-            console.log('Connection to server opened');
-            ws.send('哈哈哈');
-        }
-        ws.onmessage = function(evt) {
-            console.log( "Received Message: " + evt.data);
-            ws.close();
-        };
-		var vue=new Vue({
+//        var ws = new WebSocket("ws://localhost:6001");
+//        ws.onopen = function (e) {
+//            console.log('Connection to server opened');
+//            ws.send('哈哈哈');
+//        }
+//        ws.onmessage = function(evt) {
+//            console.log( "Received Message: " + evt.data);
+//            ws.close();
+//        };
+		var roomList=new Vue({
 		    el: '.roomList',
 		    methods:{
-		    	created: function() {
+                getRoomListInfo: function() {
                     this.$http.get('rooms/getRoom').then((data) => {
                         console.log(data);
                     })
-			    }
+			    },
+				createRoom:function(){
+                    alert(123)
+				}
 		    }
 		});
 	</script>
