@@ -2,12 +2,16 @@
 var rooms = require(process.cwd()+'/models/rooms/rooms');
 var ws = require('ws');
 var session = require('express-session');
+var bodyParser = require('body-parser');
+var multer = require('multer');
 
 var util = require('util');
 var response = require(process.cwd()+'/models/result');
 
 var id = 0;
 var cons = new Array();
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 //创建webSocket服务器
 function createServer(port) {
     var WebSocketServer = ws.Server;
@@ -44,6 +48,9 @@ exports.controller = function (app) {
         resave: true,
         saveUninitialized:true
     }));
+    app.use(bodyParser.json()); // for parsing application/json
+    app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+    // app.use(multer()); // for parsing multipart/form-data
 
     app.get('/rooms/getRoom', function (req, res) {
         var room = rooms.createRooms({
@@ -64,10 +71,22 @@ exports.controller = function (app) {
         res.send(jsonResult);
     });
     //进入房间
-    app.get('/rooms/comeIn',function (req,res) {
-        console.log("房间钥匙："+req.body.key);
-        req.session.roomkey= req.body.key;
-        res.sendfile('vue/'+'home.html');
+    app.post('/rooms/comeIn',urlencodedParser ,function (req,res) {
+        console.log(req.body.params.key);
+        var jsonResult ;
+        if(req.body.params.key){
+            req.session.roomkey= req.body.params.key;
+             jsonResult = response.JsonResult({
+                 data:null
+            })
+        }else{
+            jsonResult = response.JsonResult({
+                code:201,
+                msg:"房间钥匙未提交",
+                data:null
+            })
+        }
+        res.send(jsonResult);
 
     })
 }

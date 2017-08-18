@@ -61,7 +61,7 @@
                         if(response.body.code==200){
                         var data=response.body.data;
                         console.log(data)
-						this.$http.jsonp('../rooms/comeIn',{params: {key: data.key}}).then(res=>{
+						this.$http.post('../rooms/comeIn',{params: {key: data.key}}).then(res=>{
 						    console.log(res)
 						},res=>{
 						    console.log(res)
