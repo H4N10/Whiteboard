@@ -1,6 +1,8 @@
 //房间基础操作
 var rooms = require(process.cwd()+'/models/rooms/rooms');
 var ws = require('ws');
+var session = require('express-session');
+
 var util = require('util');
 var response = require(process.cwd()+'/models/result');
 
@@ -36,6 +38,12 @@ function createServer(port) {
 
 exports.controller = function (app) {
     //获取房间属性
+    app.use(session({
+        secret: 'roomSession',
+        cookie: {maxAge: 80000 },  //设置maxAge是80000ms，即80s后session和相应的cookie失效过期
+        resave: true,
+        saveUninitialized:true
+    }));
 
     app.get('/rooms/getRoom', function (req, res) {
         var room = rooms.createRooms({
@@ -55,5 +63,11 @@ exports.controller = function (app) {
         })
         res.send(jsonResult);
     });
+    //进入房间
+    app.get('/rooms/comeIn',function (req,res) {
+        console.log("房间钥匙："+req.body.key);
+        req.session.roomkey= req.body.key;
+        res.sendfile('vue/'+'home.html');
 
+    })
 }
