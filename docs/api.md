@@ -2,9 +2,7 @@
 ---
 ## IP：localhost，端口号：3000
  [错误代码说明](#errorcode)
-## 获取房间属性接口
 
-* #### 地址：/rooms/getRoom
 
 ---
 #### HTTP请求方式
@@ -29,9 +27,9 @@
 |name | string | 房间名称 |
 |key | string |房间钥匙 |
 
-## 获取所有房间信息
+## 1.2 获取所有房间信息
 
-* #### 地址：/rooms/getRooms
+*  地址：/rooms/getRooms
 
 ---
 #### HTTP请求方式
@@ -55,7 +53,6 @@
 |id | string |房间ID|
 |name | string | 房间名称 |
 |key | string |房间钥匙 |
-
 ## 1.3 进入房间
 
 *  地址：/rooms/comeIn
@@ -79,6 +76,8 @@
 | |  ||
 
 > 请求后会跳转到room.html,并在session中存入｛roomkey,key｝键值对用作后续操作
+
+
 
 
 
