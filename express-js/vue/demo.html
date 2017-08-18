@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title>Document</title>
+	<title>roomList</title>
 	<link  rel="stylesheet" href="../css/public.css">
 </head>
 <body>
@@ -62,21 +62,24 @@
                         var data=response.body.data;
                         console.log(data)
 						this.$http.post('../rooms/comeIn',{params: {key: data.key}}).then(res=>{
-						    console.log(res)
+						    if(res.body.code==200){
+						        window.location.href="room.html?room_id"+data.id+"&room_key="+data.key;
+                                    //Html连接webSocket demo
+                                var ws = new WebSocket("ws://localhost:"+data.key+"room.html");
+                                ws.onopen = function (e) {
+                                    console.log('Connection to server opened');
+                                    ws.send('哈哈哈');
+                                };
+                                ws.onmessage = function(evt) {
+                                    console.log( "Received Message: " + evt.data);
+                                    ws.close();
+                                };
+						    }else{
+						        alert(res.body.code);
+						    }
 						},res=>{
 						    console.log(res)
 						})
-//						window.location.href="room.html?room_id"+data.id+"&room_key="+data.key;
-                        //Html连接webSocket demo
-//                        var ws = new WebSocket("ws://localhost:"+data.key);
-//                        ws.onopen = function (e) {
-//                            console.log('Connection to server opened');
-//                            ws.send('哈哈哈');
-//                        }
-//                        ws.onmessage = function(evt) {
-//                            console.log( "Received Message: " + evt.data);
-//                            ws.close();
-//                        };
                     }
                 },response =>{
                         console.log(response)
