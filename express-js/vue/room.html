@@ -3,26 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Document</title>
-    <style>
-        *{
-            margin:0;
-            padding:0;
-        }
-        #canvas{
-            background:#000;
-        }
-    </style>
+    <link  rel="stylesheet" href="../css/public.css">
 </head>
 <body>
 <canvas id="canvas"></canvas>
-<button id="line">线</button>
-<button id="rectangle">矩形</button>
-<button id="circle">圆形</button>
+<div class="buttonGroup">
+    <div id="line" class="button">线</div>
+    <div id="rectangle" class="button">矩形</div>
+    <div id="circle" class="button">圆形</div>
+</div>
 <script type="text/javascript" src="../js/freeGraphic.js"></script>
 <script type="text/javascript">
     var canvas=document.getElementById("canvas");
-    canvas.width=500;
-    canvas.height=600;
+    canvas.width=window.innerWidth;
+    canvas.height=window.innerHeight;
     var context=canvas.getContext("2d");
     document.getElementById("line").onclick=function(e){
         var freeGrphic1=new freeGraphic(1,canvas);
