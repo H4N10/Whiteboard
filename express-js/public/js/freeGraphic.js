@@ -23,6 +23,7 @@ freeGraphic.prototype._init=function(type,canvas){
 	}
 }
 freeGraphic.prototype.mouseDown=function(e){
+	console.log(1)
 	this.isClick=true;
 	this.startX=e.clientX;
 	this.startY=e.clientY;
