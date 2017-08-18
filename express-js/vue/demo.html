@@ -9,8 +9,8 @@
     <div class="roomList">
 		<div class="showList">
 			<ul>
-				<li v-for="roomInfo in roomInfos" :id="'room_'+roomInfo.room_id">
-					<a :href="'room.html?room_id='+roomInfo.room_id+'&room_key='+roomInfo.room_key">{{roomInfo.room_name}}</a>
+				<li v-for="roomInfo in roomInfos" :id="'room_'+roomInfo.room_id" @click="comeInRoom(roomInfo.room_key)">
+					{{roomInfo.room_name}}
 				</li>
 			</ul>
 		</div>
@@ -59,31 +59,30 @@
 				createRoom:function(){
                     this.$http.get('../rooms/getRoom').then(response => {
                         if(response.body.code==200){
-                        var data=response.body.data;
-                        console.log(data)
-						this.$http.post('../rooms/comeIn',{params: {key: data.key}}).then(res=>{
-						    if(res.body.code==200){
-						        window.location.href="room.html?room_id"+data.id+"&room_key="+data.key;
-                                    //Html连接webSocket demo
-                                var ws = new WebSocket("ws://localhost:"+data.key+"room.html");
-                                ws.onopen = function (e) {
-                                    console.log('Connection to server opened');
-                                    ws.send('哈哈哈');
-                                };
-                                ws.onmessage = function(evt) {
-                                    console.log( "Received Message: " + evt.data);
-                                    ws.close();
-                                };
-						    }else{
-						        alert(res.body.code);
-						    }
-						},res=>{
-						    console.log(res)
-						})
-                    }
+                          var data=response.body.data;
+                          window.sessionStorage.setItem("key",data.key);
+                           window.location.href="../view/room";
+                        }else{
+                            alert(response.body.code)
+					    }
                 },response =>{
                         console.log(response)
                     })
+				},
+				comeInRoom:function(key){
+				    console.log(key)
+				    window.sessionStorage.setItem("key",key);
+                    console.log(window.sessionStorage.getItem("key"));
+				    window.location.href="../view/room";
+//				    this.$http.post('../rooms/comeIn',{params: {key: key}}).then(res=>{
+//				        if(res.body.code==200){
+////				            window.location.href="../views/room";
+//					    }else{
+//				            alert(res.body.code);
+//					    }
+//					},res=>{
+//				        console.log(response);
+//					})
 				}
 		    }
 		});

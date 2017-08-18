@@ -82,9 +82,8 @@ html,body{
     border-radius: 15px;
     margin-bottom: 15px;
     font-size:20px;
-}
-.showList ul li a,.showList ul li a:hover,.showList ul li a:active{
     color:#02baf2;
+    cursor:pointer;
 }
 #getRoomListInfoButton,#createRoom{
     position: relative;

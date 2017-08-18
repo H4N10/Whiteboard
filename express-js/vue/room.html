@@ -2,9 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>room</title>
+    <title>Document</title>
+    <style>
+        *{
+            margin:0;
+            padding:0;
+        }
+        #canvas{
+            background:#000;
+        }
+    </style>
 </head>
 <body>
-sd
+<canvas id="canvas"></canvas>
+<button id="line">线</button>
+<button id="rectangle">矩形</button>
+<button id="circle">圆形</button>
+<script type="text/javascript" src="../js/freeGraphic.js"></script>
+<script type="text/javascript">
+    var canvas=document.getElementById("canvas");
+    canvas.width=500;
+    canvas.height=600;
+    var context=canvas.getContext("2d");
+    document.getElementById("line").onclick=function(e){
+        var freeGrphic1=new freeGraphic(1,canvas);
+    }
+    document.getElementById("rectangle").onclick=function(e){
+        var freeGrphic2=new freeGraphic(2,canvas);
+    }
+    document.getElementById("circle").onclick=function(e){
+        var freeGrphic3=new freeGraphic(3,canvas);
+    }
+</script>
 </body>
 </html>
