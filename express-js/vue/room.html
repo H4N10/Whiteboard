@@ -24,13 +24,14 @@
     canvas.height=window.innerHeight;
     var context=canvas.getContext("2d");
     document.getElementById("line").onclick=function(e){
-        var freeGrphic1=new freeGraphic(1,canvas);
+        var freeGraphic1=new freeGraphic(1,canvas);
+        console.log(freeGraphic)
     }
     document.getElementById("rectangle").onclick=function(e){
-        var freeGrphic2=new freeGraphic(2,canvas);
+        var freeGraphic2=new freeGraphic(2,canvas);
     }
     document.getElementById("circle").onclick=function(e){
-        var freeGrphic3=new freeGraphic(3,canvas);
+        var freeGraphic3=new freeGraphic(3,canvas);
     }
 //    var vue=new Vue({
 //        el:'.canvasPanel',
