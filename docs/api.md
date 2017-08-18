@@ -1,6 +1,10 @@
 ## API
 ---
 ## IP：localhost，端口号：3000
+ 
+
+* #### 地址：/rooms/getRoom
+=======
  [错误代码说明](#errorcode)
 
 
@@ -76,7 +80,6 @@
 | |  ||
 
 > 请求后会跳转到room.html,并在session中存入｛roomkey,key｝键值对用作后续操作
-
 
 
 
