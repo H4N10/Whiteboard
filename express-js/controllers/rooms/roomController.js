@@ -3,7 +3,7 @@ var rooms = require(process.cwd()+'/models/rooms/rooms');
 var ws = require('ws');
 var session = require('express-session');
 var bodyParser = require('body-parser');
-var multer = require('multer');
+// var multer = require('multer');
 
 var util = require('util');
 var response = require(process.cwd()+'/models/result');
