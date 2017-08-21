@@ -9,47 +9,32 @@
 <div class="canvasPanel">
     <canvas id="canvas"></canvas>
     <div class="buttonGroup">
-        <!--<div  v-for="(graphic,index) in graphicAttr" :id="graphic.id" class="button" @click="newFreeGraphic(index+1)">{{graphic.name}}</div>-->
-        <div id="line" class="button" @click="newFreeGraphic(1)">线</div>
-        <div id="rectangle" class="button" @click="newFreeGraphic(2)">矩形</div>
-        <div id="circle" class="button" @click="newFreeGraphic(3)">圆形</div>
+        <div  v-for="(graphic,index) in graphicAttr" :id="graphic.id" class="button" @click="newFreeGraphic(index+1)">{{graphic.name}}</div>
     </div>
 </div>
 <script type="text/javascript" src="../js/vue.js"></script>
 <script type="text/javascript" src="../js/vue-resource.js"></script>
 <script type="text/javascript" src="../js/freeGraphic.js"></script>
 <script type="text/javascript">
-    var canvas=document.getElementById("canvas");
-    canvas.width=window.innerWidth;
-    canvas.height=window.innerHeight;
-    var context=canvas.getContext("2d");
-    document.getElementById("line").onclick=function(e){
-        var freeGraphic1=new freeGraphic(1,canvas);
-        console.log(freeGraphic)
-    }
-    document.getElementById("rectangle").onclick=function(e){
-        var freeGraphic2=new freeGraphic(2,canvas);
-    }
-    document.getElementById("circle").onclick=function(e){
-        var freeGraphic3=new freeGraphic(3,canvas);
-    }
-//    var vue=new Vue({
-//        el:'.canvasPanel',
-//        data:{
-//            graphicAttr:[
-//                {id:"line",name:"线"},
-//                {id:"rectangle",name:"矩形"},
-//                {id:"circle",name:"圆形"}
-//            ]
-//        },
-//        methods:{
-//            newFreeGraphic:function(type){
-//                console.log(type)
-//                var freeGraphic1=new freeGraphic(type,canvas);
-//                console.log(freeGraphic1)
-//            }
-//        }
-//    })
+    var canvas1=document.getElementById("canvas");
+    canvas1.width=window.innerWidth;
+    canvas1.height=window.innerHeight;
+    var context=canvas1.getContext("2d");
+    var vue=new Vue({
+        el:'.canvasPanel',
+        data:{
+            graphicAttr:[
+                {id:"line",name:"线"},
+                {id:"rectangle",name:"矩形"},
+                {id:"circle",name:"圆形"}
+            ]
+        },
+        methods:{
+            newFreeGraphic:function(type){
+                var freeGraphic1=new freeGraphic(type,"canvas");
+            }
+        }
+    })
 </script>
 </body>
 </html>

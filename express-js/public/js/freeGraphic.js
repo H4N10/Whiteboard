@@ -8,7 +8,8 @@ freeGraphic.prototype._init=function(type,canvas){
 	if(!canvas||canvas===undefined)
 		return;
 	self.type=type;
-	self.canvas=canvas;
+	// self.canvas=canvas;
+	self.canvas=document.getElementById("canvas");
 	self.context=this.canvas.getContext("2d");
 	self.startX=self.startY=self.endX=self.endY=0;
 	self.isClick=false;
