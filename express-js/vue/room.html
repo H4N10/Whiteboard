@@ -16,6 +16,16 @@
 <script type="text/javascript" src="../js/vue-resource.js"></script>
 <script type="text/javascript" src="../js/freeGraphic.js"></script>
 <script type="text/javascript">
+//    Html连接webSocket demo
+            var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
+            ws.onopen = function (e) {
+                console.log('Connection to server opened');
+                ws.send('哈哈哈');
+            }
+            ws.onmessage = function(evt) {
+                console.log( "Received Message: " + evt.data);
+                ws.close();
+            };
     var canvas1=document.getElementById("canvas");
     canvas1.width=window.innerWidth;
     canvas1.height=window.innerHeight;
