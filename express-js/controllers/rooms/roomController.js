@@ -24,16 +24,14 @@ function createServer(port) {
         // console.log(util.inspect(socket.upgradeReq, {depth: null}));
         console.log('new connection successfully userId:' );
         cons.push(socket);
-        // userArray.push(userId);
         socket.on('message', function (message) {
-             for (var i=0; i<cons.length;i++) {
-                 console.log(message);                //判断userid是否为toUserId（发给指定的客户端）
-                // var msgObj = JSON.parse(message);
-                // if (userArray[i] == msgObj.toUserId) {
-                    cons[i].send('徐少秋');
-                    // break;
-                // }
+            if(cons.length>1){
+                for (var i=1; i<cons.length;i++) { //第0个是房主
+                    console.log(message);
+                    cons[i].send(message);//发给指定的客户端(除了房主）
+                }
             }
+
 
         });
 
