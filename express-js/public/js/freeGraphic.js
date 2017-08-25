@@ -13,6 +13,18 @@ freeGraphic.prototype._init=function(type,canvas){
 	self.context=this.canvas.getContext("2d");
 	self.startX=self.startY=self.endX=self.endY=0;
 	self.isClick=false;
+    // Html连接webSocket demo
+    self.ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
+    // self.ws.onopen = function (ev) {
+    //     console.log(1)
+    //     console.log('Connection to server opened');
+    //     self.ws.send('哈哈哈');
+    // }
+    // console.log(self.ws)
+    // self.ws.onmessage=function(ev){
+    // 	console.log(ev.data)
+		// self.ws.close()
+    // }
 	self.canvas.onmousedown=function(e){
 		self.mouseDown(e)
 	}
@@ -24,10 +36,11 @@ freeGraphic.prototype._init=function(type,canvas){
 	}
 }
 freeGraphic.prototype.mouseDown=function(e){
-	console.log(1)
-	this.isClick=true;
-	this.startX=e.clientX;
-	this.startY=e.clientY;
+	if(1 == e.which){
+        this.isClick=true;
+        this.startX=e.clientX;
+        this.startY=e.clientY;
+	}
 }
 freeGraphic.prototype.mouseMove=function(e){
 	if(this.isClick){
@@ -56,6 +69,9 @@ freeGraphic.prototype.drawGraphic=function(){
 			this.drawCircle();
 			break;
 	}
+	var toDataUrl=this.canvas.toDataURL("image/png");
+    this.ws.send(toDataUrl);
+	console.log(this.ws)
 }
 freeGraphic.prototype.drawLine=function(){
 	this.context.beginPath();
