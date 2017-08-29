@@ -21,10 +21,12 @@ freeGraphic.prototype._init=function(type,canvas){
     //     self.ws.send('哈哈哈');
     // }
     // console.log(self.ws)
-    // self.ws.onmessage=function(ev){
-    // 	console.log(ev.data)
+    self.ws.onmessage=function(ev){
+        var getInfo=JSON.parse(ev.data);
+    	console.log(getInfo)
 		// self.ws.close()
-    // }
+
+    }
 	self.canvas.onmousedown=function(e){
 		self.mouseDown(e)
 	}
@@ -69,8 +71,18 @@ freeGraphic.prototype.drawGraphic=function(){
 			this.drawCircle();
 			break;
 	}
-	var toDataUrl=this.canvas.toDataURL("image/png");
-    this.ws.send(toDataUrl);
+    // var toDataUrl=this.canvas.toDataURL("image/png");
+    // this.ws.send(toDataUrl);
+	var self=this;
+	self.shapeList={
+		"type":self.type,
+		"startX":self.startX,
+		"startY":self.startY,
+		"endX":self.endX,
+		"endY":self.endY
+	}
+	console.log(self.shapeList)
+	this.ws.send(JSON.stringify(self.shapeList))
 	console.log(this.ws)
 }
 freeGraphic.prototype.drawLine=function(){

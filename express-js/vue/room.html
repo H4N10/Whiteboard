@@ -35,7 +35,11 @@
             newFreeGraphic:function(type){
                 var freeGraphic1=new freeGraphic(type,"canvas");
                 window.onbeforeunload=function (){
-                    freeGraphic1.ws.close();
+//                    if(event.clientX>document.body.clientWidth && event.clientY < 0 || event.altKey){
+                        freeGraphic1.ws.close();
+//                    }else{
+//                        alert("你正在刷新页面");
+//                    }
                 }
             }
         }
