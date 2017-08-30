@@ -14,6 +14,8 @@ freeGraphic.prototype._init=function(type,canvas){
 	self.context=this.canvas.getContext("2d");
 	self.startX=self.startY=self.endX=self.endY=0;
 	self.isClick=false;
+	self.shapeList=new Array();
+    self.shapListJson=new Object();
     // Html连接webSocket demo
     self.ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
     // self.ws.onopen = function (ev) {
@@ -25,15 +27,14 @@ freeGraphic.prototype._init=function(type,canvas){
     // self.ws.onmessage=function(ev){
     //     var getInfo=JSON.parse(ev.data);
     // 	console.log(getInfo)
-		// self.isMouseDraw=false;
-		// self.startX=getInfo.startX;
-    // 	self.startY=getInfo.startY;
-    // 	self.endX=getInfo.endX;
-    // 	self.endY=getInfo.endY;
-    // 	self.type=getInfo.type;
-    // 	self.drawGraphic();
+    //     // self.isMouseDraw=false;
+    //     // self.startX=getInfo.startX;
+    // 	// self.startY=getInfo.startY;
+    // 	// self.endX=getInfo.endX;
+    // 	// self.endY=getInfo.endY;
+    // 	// self.type=getInfo.type;
+    // 	// self.drawGraphic();
 		// // self.ws.close()
-    //
     // }
 	self.canvas.onmousedown=function(e){
     	self.isMouseDraw=true;
@@ -66,43 +67,65 @@ freeGraphic.prototype.mouseMove=function(e){
 }
 freeGraphic.prototype.mouseUp=function(e){
 	this.isClick=false;
+    this.shapeList.push(this.shape);
 }
 freeGraphic.prototype.drawGraphic=function(){
-
+    this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
     var self=this;
     if(self.isMouseDraw) {
-        self.shapeList = {
+    	self.shape={
             "type": self.type,
             "startX": self.startX,
             "startY": self.startY,
             "endX": self.endX,
             "endY": self.endY
         }
-        console.log(self.shapeList)
-        this.ws.send(JSON.stringify(self.shapeList))
-        console.log(this.ws)
+        self.shapeListJson={
+    		shapeList:self.shapeList,
+			shape:self.shape
+		}
+		console.log(self.shapeListJson)
+        self.ws.send(JSON.stringify(self.shapeListJson))
     }
-
-	this.context.strokeStyle="#15dde8";
-	this.context.fillStyle="#15dde8";
-	this.context.lineWidth=1;
-	switch(this.type){
-		case 1:
-			this.drawLine();
-			break;
-		case 2:
-			this.drawRect();
-			break;
-		case 3:
-			this.drawCircle();
-			break;
+    self.drawGraphicType();
+    console.log(self.shapeList)
+    if(self.shapeList[0]!=undefined){
+        for(var i=0;i<self.shapeList.length;i++){
+            self.startX=self.shapeList[i].startX;
+            self.startY=self.shapeList[i].startY;
+            self.endX=self.shapeList[i].endX;
+            self.endY=self.shapeList[i].endY;
+            self.type=self.shapeList[i].type;
+        	self.drawGraphicType();
+		}
+		self.startX=self.shape.startX;
+        self.startY=self.shape.startY;
+        self.endX=self.shape.endX;
+        self.endY=self.shape.endY;
+        self.type=self.shape.type;
 	}
+
     // var toDataUrl=this.canvas.toDataURL("image/png");
     // this.ws.send(toDataUrl);
 }
+freeGraphic.prototype.drawGraphicType=function(){
+    this.context.strokeStyle="#15dde8";
+    this.context.fillStyle="#15dde8";
+    this.context.lineWidth=1;
+    switch(this.type){
+        case 1:
+            this.drawLine();
+            break;
+        case 2:
+            this.drawRect();
+            break;
+        case 3:
+            this.drawCircle();
+            break;
+    }
+}
 freeGraphic.prototype.drawLine=function(){
 	this.context.beginPath();
-	this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
 	this.context.moveTo(this.startX,this.startY);
 	this.context.lineTo(this.endX,this.endY);
 	this.context.stroke();
@@ -111,7 +134,6 @@ freeGraphic.prototype.drawLine=function(){
 }
 freeGraphic.prototype.drawRect=function(){
 	this.context.beginPath();
-	this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
 	this.context.rect(this.startX,this.startY,this.endX-this.startX,this.endY-this.startY);
 	this.context.fill();
 	this.context.closePath();
@@ -119,7 +141,6 @@ freeGraphic.prototype.drawRect=function(){
 }
 freeGraphic.prototype.drawCircle=function(){
 	this.context.beginPath();
-	this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
 	this.context.arc(this.startX,this.startY,Math.sqrt((this.endX-this.startX)*(this.endX-this.startX)+(this.endY-this.startY)*(this.endY-this.startY)),0,2*Math.PI,false);
 	this.context.fill();
 	this.context.closePath();
