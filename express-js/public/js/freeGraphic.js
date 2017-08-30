@@ -8,6 +8,7 @@ freeGraphic.prototype._init=function(type,canvas){
 	if(!canvas||canvas===undefined)
 		return;
 	self.type=type;
+	self.isMouseDraw=false;
 	// self.canvas=canvas;
 	self.canvas=document.getElementById("canvas");
 	self.context=this.canvas.getContext("2d");
@@ -24,16 +25,26 @@ freeGraphic.prototype._init=function(type,canvas){
     self.ws.onmessage=function(ev){
         var getInfo=JSON.parse(ev.data);
     	console.log(getInfo)
+		self.isMouseDraw=false;
+		self.startX=getInfo.startX;
+    	self.startY=getInfo.startY;
+    	self.endX=getInfo.endX;
+    	self.endY=getInfo.endY;
+    	self.type=getInfo.type;
+    	self.drawGraphic();
 		// self.ws.close()
 
     }
 	self.canvas.onmousedown=function(e){
+    	self.isMouseDraw=true;
 		self.mouseDown(e)
 	}
 	self.canvas.onmousemove=function(e){
+        self.isMouseDraw=true;
 		self.mouseMove(e);
 	}
 	self.canvas.onmouseup=function(e){
+        self.isMouseDraw=false;
 		self.mouseUp(e);
 	}
 }
@@ -57,6 +68,21 @@ freeGraphic.prototype.mouseUp=function(e){
 	this.isClick=false;
 }
 freeGraphic.prototype.drawGraphic=function(){
+
+    var self=this;
+    if(self.isMouseDraw) {
+        self.shapeList = {
+            "type": self.type,
+            "startX": self.startX,
+            "startY": self.startY,
+            "endX": self.endX,
+            "endY": self.endY
+        }
+        console.log(self.shapeList)
+        this.ws.send(JSON.stringify(self.shapeList))
+        console.log(this.ws)
+    }
+
 	this.context.strokeStyle="#15dde8";
 	this.context.fillStyle="#15dde8";
 	this.context.lineWidth=1;
@@ -73,17 +99,6 @@ freeGraphic.prototype.drawGraphic=function(){
 	}
     // var toDataUrl=this.canvas.toDataURL("image/png");
     // this.ws.send(toDataUrl);
-	var self=this;
-	self.shapeList={
-		"type":self.type,
-		"startX":self.startX,
-		"startY":self.startY,
-		"endX":self.endX,
-		"endY":self.endY
-	}
-	console.log(self.shapeList)
-	this.ws.send(JSON.stringify(self.shapeList))
-	console.log(this.ws)
 }
 freeGraphic.prototype.drawLine=function(){
 	this.context.beginPath();

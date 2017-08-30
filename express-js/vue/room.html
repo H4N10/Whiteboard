@@ -22,6 +22,26 @@
     canvas1.width=window.innerWidth;
     canvas1.height=window.innerHeight;
     var context=canvas1.getContext("2d");
+   var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
+    // self.ws.onopen = function (ev) {
+    //     console.log(1)
+    //     console.log('Connection to server opened');
+    //     self.ws.send('哈哈哈');
+    // }
+    // console.log(self.ws)
+    ws.onmessage=function(ev){
+        var getInfo=JSON.parse(ev.data);
+        var freeGraphic2=new freeGraphic(getInfo.type,"canvas");
+        freeGraphic2.isMouseDraw=false;
+        freeGraphic2.startX=getInfo.startX;
+        freeGraphic2.startY=getInfo.startY;
+        freeGraphic2.endX=getInfo.endX;
+        freeGraphic2.endY=getInfo.endY;
+        freeGraphic2.type=getInfo.type;
+        freeGraphic2.drawGraphic();
+        // self.ws.close()
+
+    }
     var vue=new Vue({
         el:'.canvasPanel',
         data:{
