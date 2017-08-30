@@ -22,19 +22,19 @@ freeGraphic.prototype._init=function(type,canvas){
     //     self.ws.send('哈哈哈');
     // }
     // console.log(self.ws)
-    self.ws.onmessage=function(ev){
-        var getInfo=JSON.parse(ev.data);
-    	console.log(getInfo)
-		self.isMouseDraw=false;
-		self.startX=getInfo.startX;
-    	self.startY=getInfo.startY;
-    	self.endX=getInfo.endX;
-    	self.endY=getInfo.endY;
-    	self.type=getInfo.type;
-    	self.drawGraphic();
-		// self.ws.close()
-
-    }
+    // self.ws.onmessage=function(ev){
+    //     var getInfo=JSON.parse(ev.data);
+    // 	console.log(getInfo)
+		// self.isMouseDraw=false;
+		// self.startX=getInfo.startX;
+    // 	self.startY=getInfo.startY;
+    // 	self.endX=getInfo.endX;
+    // 	self.endY=getInfo.endY;
+    // 	self.type=getInfo.type;
+    // 	self.drawGraphic();
+		// // self.ws.close()
+    //
+    // }
 	self.canvas.onmousedown=function(e){
     	self.isMouseDraw=true;
 		self.mouseDown(e)
