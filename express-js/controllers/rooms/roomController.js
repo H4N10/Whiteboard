@@ -20,15 +20,16 @@ function createServer(port) {
         // verifyClient: socketverify //(可选)用于验证连接的函数
     });
     server.on('connection', function (socket) {
-        // var userId = ws.upgradeReq.headers['userid'];
-        // console.log(util.inspect(socket.upgradeReq, {depth: null}));
-        console.log('new connection successfully userId:' );
         cons.push(socket);
+        // console.dir(socket);
+
         socket.on('message', function (message) {
             if(cons.length>1){
-                for (var i=1; i<cons.length;i++) { //第0个是房主
+                for (var i=0; i<cons.length;i++) { //第0个是房主
                     console.log(message);
-                    cons[i].send(message);//发给指定的客户端(除了房主）
+                    if(cons[i]!=socket){
+                        cons[i].send(message);//发给指定的客户端(除了房主）
+                    }
                 }
             }
 
