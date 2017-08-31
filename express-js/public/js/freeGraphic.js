@@ -9,7 +9,6 @@ freeGraphic.prototype._init=function(type,canvas){
 		return;
 	self.type=type;
 	self.isMouseDraw=false;
-	// self.canvas=canvas;
 	self.canvas=document.getElementById("canvas");
 	self.context=this.canvas.getContext("2d");
 	self.startX=self.startY=self.endX=self.endY=0;
@@ -18,24 +17,6 @@ freeGraphic.prototype._init=function(type,canvas){
     self.shapListJson=new Object();
     // Html连接webSocket demo
     self.ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
-    // self.ws.onopen = function (ev) {
-    //     console.log(1)
-    //     console.log('Connection to server opened');
-    //     self.ws.send('哈哈哈');
-    // }
-    // console.log(self.ws)
-    // self.ws.onmessage=function(ev){
-    //     var getInfo=JSON.parse(ev.data);
-    // 	console.log(getInfo)
-    //     // self.isMouseDraw=false;
-    //     // self.startX=getInfo.startX;
-    // 	// self.startY=getInfo.startY;
-    // 	// self.endX=getInfo.endX;
-    // 	// self.endY=getInfo.endY;
-    // 	// self.type=getInfo.type;
-    // 	// self.drawGraphic();
-		// // self.ws.close()
-    // }
 	self.canvas.onmousedown=function(e){
     	self.isMouseDraw=true;
 		self.mouseDown(e)
@@ -104,9 +85,6 @@ freeGraphic.prototype.drawGraphic=function(){
         self.endY=self.shape.endY;
         self.type=self.shape.type;
 	}
-
-    // var toDataUrl=this.canvas.toDataURL("image/png");
-    // this.ws.send(toDataUrl);
 }
 freeGraphic.prototype.drawGraphicType=function(){
     this.context.strokeStyle="#15dde8";

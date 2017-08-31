@@ -25,12 +25,6 @@
     if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
 
         var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
-        // self.ws.onopen = function (ev) {
-        //     console.log(1)
-        //     console.log('Connection to server opened');
-        //     self.ws.send('哈哈哈');
-        // }
-        // console.log(self.ws)
         ws.onmessage=function(ev){
             var getInfoAttr=JSON.parse(ev.data);
             console.log(getInfoAttr)
@@ -55,7 +49,6 @@
                     freeGraphic2.endY=getInfo.endY;
                     freeGraphic2.type=getInfo.type;
                     freeGraphic2.drawGraphicType();
-                    // self.ws.close()
                 }
             }
 
