@@ -2,9 +2,7 @@ function freeGraphic(type,canvas){
 	this._init(type,canvas);
 }
 freeGraphic.prototype={
-
 	_init:function(type,canvas){
-		console.log(this)
 	    var self=this;
 	    if(!type||type===undefined)
 	        return;
@@ -14,6 +12,7 @@ freeGraphic.prototype={
 	    self.isMouseDraw=false;
 	    self.canvas=document.getElementById("canvas");
 	    self.context=this.canvas.getContext("2d");
+        self.rect=self.canvas.getBoundingClientRect();
 	    self.startX=self.startY=self.endX=self.endY=0;
 	    self.isClick=false;
 	    self.shapeList=new Array();
@@ -38,6 +37,8 @@ freeGraphic.prototype={
 	        this.isClick=true;
 	        this.startX=e.clientX;
 	        this.startY=e.clientY;
+	        console.log(this.startX)
+            console.log(this.startY)
 	    }
 	},
 	mouseMove:function(e){
@@ -90,9 +91,13 @@ freeGraphic.prototype={
 	    }
 	},
 	drawGraphicType:function(){
-	    this.context.strokeStyle="#15dde8";
-	    this.context.fillStyle="#15dde8";
-	    this.context.lineWidth=1;
+        this.context.strokeStyle = "#15dde8";
+        this.context.fillStyle = "#15dde8";
+        this.context.lineWidth = 1;
+        this.startX = (this.startX - this.rect.left) * (this.canvas.width / this.rect.width);
+        this.startY = (this.startY - this.rect.top) * (this.canvas.height / this.rect.height);
+        this.endX = (this.endX - this.rect.left) * (this.canvas.width / this.rect.width);
+        this.endY = (this.endY - this.rect.top) * (this.canvas.height / this.rect.height);
 	    switch(this.type){
 	        case 1:
 	            this.drawLine();

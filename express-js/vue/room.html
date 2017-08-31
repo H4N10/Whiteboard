@@ -19,12 +19,10 @@
 
 
     var canvas1=document.getElementById("canvas");
-    canvas1.width=window.innerWidth;
-    canvas1.height=window.innerHeight;
-//    window.onresize=function(){
-//        canvas1.width=window.innerWidth;
-//        canvas1.height=window.innerHeight;
-//    }
+//    canvas1.width=window.innerWidth/2;
+//    canvas1.height=window.innerHeight/2;
+      canvas1.width=600;
+      canvas1.height=300;
     var context=canvas1.getContext("2d");
     if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
 

@@ -108,7 +108,11 @@ html,body{
     padding:0;
 }
 #canvas{
+    position: relative;
     background:#000;
+    margin-top:50px;
+    margin-left:50px;
+    display:block;
 }
 .buttonGroup{
     position: absolute;
