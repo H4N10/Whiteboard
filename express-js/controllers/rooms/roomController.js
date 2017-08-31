@@ -21,8 +21,9 @@ function createServer(port) {
     });
     server.on('connection', function (socket) {
         cons.push(socket);
+        console.log("用户连接："+cons.length);
         // console.dir(socket);
-
+        socket.send("标识"+ cons.length);
         socket.on('message', function (message) {
             if(cons.length>1){
                 for (var i=0; i<cons.length;i++) { //第0个是房主
