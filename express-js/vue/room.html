@@ -22,42 +22,44 @@
     canvas1.width=window.innerWidth;
     canvas1.height=window.innerHeight;
     var context=canvas1.getContext("2d");
-   var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
-    // self.ws.onopen = function (ev) {
-    //     console.log(1)
-    //     console.log('Connection to server opened');
-    //     self.ws.send('哈哈哈');
-    // }
-    // console.log(self.ws)
-    ws.onmessage=function(ev){
-        var getInfoAttr=JSON.parse(ev.data);
-        console.log(getInfoAttr)
-        var freeGraphic2=new freeGraphic(getInfoAttr.shape.type,"canvas");
-        console.log(freeGraphic2)
-//        freeGraphic2.isMouseDraw=false;
-//        freeGraphic2.shape=getInfoAttr.shape;
-//        freeGraphic2.shape=getInfoAttr.shapeList;
-//        freeGraphic2.startX=getInfoAttr.shape.startX;
-//        freeGraphic2.startY=getInfoAttr.shape.startY;
-//        freeGraphic2.endX=getInfoAttr.shape.endX;
-//        freeGraphic2.endY=getInfoAttr.shape.endY;
-//        freeGraphic2.type=getInfoAttr.shape.type;
-//        console.log(freeGraphic2)
-//        freeGraphic2.drawGraphicType();
-//        if(getInfoAttr.shapeList[0]!=undefined&&getInfoAttr.shapeList.length!=0){
-//            for(var x=0;x<getInfoAttr.shapeList.length;x++){
-//                var getInfo=getInfoAttr.shapeList[x];
-//                console.log(getInfo)
-//                freeGraphic2.startX=getInfo.startX;
-//                freeGraphic2.startY=getInfo.startY;
-//                freeGraphic2.endX=getInfo.endX;
-//                freeGraphic2.endY=getInfo.endY;
-//                freeGraphic2.type=getInfo.type;
-//                freeGraphic2.drawGraphicType;
-//                // self.ws.close()
-//            }
-//        }
+    if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
 
+        var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
+        // self.ws.onopen = function (ev) {
+        //     console.log(1)
+        //     console.log('Connection to server opened');
+        //     self.ws.send('哈哈哈');
+        // }
+        // console.log(self.ws)
+        ws.onmessage=function(ev){
+            var getInfoAttr=JSON.parse(ev.data);
+            console.log(getInfoAttr)
+            var freeGraphic2=new freeGraphic(getInfoAttr.shape.type,"canvas");
+            freeGraphic2.isMouseDraw=false;
+            freeGraphic2.shape=getInfoAttr.shape;
+            freeGraphic2.shapeList=getInfoAttr.shapeList;
+            freeGraphic2.startX=getInfoAttr.shape.startX;
+            freeGraphic2.startY=getInfoAttr.shape.startY;
+            freeGraphic2.endX=getInfoAttr.shape.endX;
+            freeGraphic2.endY=getInfoAttr.shape.endY;
+            freeGraphic2.type=getInfoAttr.shape.type;
+            freeGraphic2.context.clearRect(0,0,freeGraphic2.canvas.width,freeGraphic2.canvas.height);
+            freeGraphic2.drawGraphicType();
+            if(getInfoAttr.shapeList[0]!=undefined&&getInfoAttr.shapeList.length!=0){
+                for(var x=0;x<getInfoAttr.shapeList.length;x++){
+                    var getInfo=getInfoAttr.shapeList[x];
+                    console.log(getInfo)
+                    freeGraphic2.startX=getInfo.startX;
+                    freeGraphic2.startY=getInfo.startY;
+                    freeGraphic2.endX=getInfo.endX;
+                    freeGraphic2.endY=getInfo.endY;
+                    freeGraphic2.type=getInfo.type;
+                    freeGraphic2.drawGraphicType();
+                    // self.ws.close()
+                }
+            }
+
+        }
     }
     var vue=new Vue({
         el:'.canvasPanel',
