@@ -61,6 +61,7 @@
 
         }
     }
+    var freeGraphic1;
     var vue=new Vue({
         el:'.canvasPanel',
         data:{
@@ -72,7 +73,15 @@
         },
         methods:{
             newFreeGraphic:function(type){
-                var freeGraphic1=new freeGraphic(type,"canvas");
+                var freeGraphicSave;
+                if(freeGraphic1){
+                    freeGraphicSave=freeGraphic1;
+                }
+                freeGraphic1=new freeGraphic(type,"canvas");
+                if(freeGraphicSave){
+                    freeGraphic1.shape=freeGraphicSave.shape;
+                    freeGraphic1.shapeList=freeGraphicSave.shapeList;
+                }
                 window.onbeforeunload=function (){
 //                    if(event.clientX>document.body.clientWidth && event.clientY < 0 || event.altKey){
                         freeGraphic1.ws.close();
