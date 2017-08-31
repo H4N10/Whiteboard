@@ -21,6 +21,10 @@
     var canvas1=document.getElementById("canvas");
     canvas1.width=window.innerWidth;
     canvas1.height=window.innerHeight;
+//    window.onresize=function(){
+//        canvas1.width=window.innerWidth;
+//        canvas1.height=window.innerHeight;
+//    }
     var context=canvas1.getContext("2d");
     if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
 
