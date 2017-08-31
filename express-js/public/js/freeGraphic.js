@@ -89,15 +89,22 @@ freeGraphic.prototype={
 	        self.endY=self.shape.endY;
 	        self.type=self.shape.type;
 	    }
+        self.startX=self.shape.startX;
+        self.startY=self.shape.startY;
+        self.endX=self.shape.endX;
+        self.endY=self.shape.endY;
+        self.type=self.shape.type;
 	},
 	drawGraphicType:function(){
-        this.context.strokeStyle = "#15dde8";
-        this.context.fillStyle = "#15dde8";
-        this.context.lineWidth = 1;
-        this.startX = (this.startX - this.rect.left) * (this.canvas.width / this.rect.width);
-        this.startY = (this.startY - this.rect.top) * (this.canvas.height / this.rect.height);
-        this.endX = (this.endX - this.rect.left) * (this.canvas.width / this.rect.width);
-        this.endY = (this.endY - this.rect.top) * (this.canvas.height / this.rect.height);
+	    this.context.strokeStyle="#15dde8";
+	    this.context.fillStyle="#15dde8";
+	    this.context.lineWidth=1;
+	    console.log(this.shape)
+        console.log(this.rect)
+	    this.startX=(this.startX-this.rect.left)*(this.canvas.width/this.rect.width);
+	    this.startY=(this.startY-this.rect.top)*(this.canvas.height/this.rect.height);
+	    this.endX=(this.endX-this.rect.left)*(this.canvas.width/this.rect.width);
+	    this.endY=(this.endY-this.rect.top)*(this.canvas.height/this.rect.height);
 	    switch(this.type){
 	        case 1:
 	            this.drawLine();
