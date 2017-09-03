@@ -66,6 +66,7 @@ freeGraphic.prototype={
 	            "endY": self.endY
 	        }
 	        self.shapeListJson={
+	        	key:10, //TODO  ，这里加个key 把连接时我返回给你的key传给我
 	            shapeList:self.shapeList,
 	            shape:self.shape
 	        }

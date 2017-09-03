@@ -25,12 +25,11 @@ function createServer(port) {
         // console.dir(socket);
         socket.send("标识"+ cons.length);
         socket.on('message', function (message) {
-            if(cons.length>1){
-                for (var i=0; i<cons.length;i++) { //第0个是房主
-                    console.log(message);
-                    if(cons[i]!=socket){
-                        cons[i].send(message);//发给指定的客户端(除了房主）
-                    }
+            var msg=JSON.parse(message);
+            for (var i = 0; i < cons.length; i++) {
+                if (i != msg.key-1) {
+                    console.dir(i)
+                    cons[i].send(message);//发给指定的客户端(除了发送方）
                 }
             }
 
