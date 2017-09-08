@@ -24,16 +24,17 @@
     var context=canvas1.getContext("2d");
     var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
     var verifyKey;
+    var freeGraphic1;
     ws.onmessage=function(e){
         verifyKey=e.data.split("标识")[1];
     }
     if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
         var freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
         freeGraphic2.ws.onmessage=function(ev){
-            console.log(ev)
             if(ev.data.split("标识").length!=2){
                 var getInfoAttr=JSON.parse(ev.data);
                 console.log(getInfoAttr)
+                freeGraphic2.shapeListJson=getInfoAttr;
                 freeGraphic2.isMouseDraw=false;
                 freeGraphic2.shape=getInfoAttr.shape;
                 freeGraphic2.shapeList=getInfoAttr.shapeList;
@@ -47,7 +48,6 @@
                 if(getInfoAttr.shapeList[0]!=undefined&&getInfoAttr.shapeList.length!=0){
                     for(var x=0;x<getInfoAttr.shapeList.length;x++){
                         var getInfo=getInfoAttr.shapeList[x];
-                        console.log(getInfo)
                         freeGraphic2.startX=getInfo.startX;
                         freeGraphic2.startY=getInfo.startY;
                         freeGraphic2.endX=getInfo.endX;
@@ -56,11 +56,11 @@
                         freeGraphic2.drawGraphicType();
                     }
                 }
+            }else{
+                freeGraphic2.verifyKey=ev.data.split("标识")[1];
             }
-
         }
     }
-    var freeGraphic1;
     var vue=new Vue({
         el:'.canvasPanel',
         data:{
