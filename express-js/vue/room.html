@@ -32,7 +32,8 @@
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
                     var getInfoAttr=JSON.parse(ev.data);
-                    console.log(getInfoAttr)
+//                    console.log(getInfoAttr)
+//                    console.log(1)
                     freeGraphic2.shapeListJson=getInfoAttr;
                     freeGraphic2.isMouseDraw=false;
                     freeGraphic2.shape=getInfoAttr.shape;

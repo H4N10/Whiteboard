@@ -9,6 +9,7 @@ freeGraphic.prototype={
 	    if(!canvas||canvas===undefined)
 	        return;
 	    self.type=type;
+	    // console.log(2)
 	    self.isMouseDraw=false;
 	    self.canvas=document.getElementById("canvas");
 	    self.context=this.canvas.getContext("2d");
