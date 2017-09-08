@@ -19,19 +19,20 @@
 
 
     var canvas1=document.getElementById("canvas");
-//    canvas1.width=window.innerWidth/2;
-//    canvas1.height=window.innerHeight/2;
-      canvas1.width=600;
-      canvas1.height=300;
+    canvas1.width=window.innerWidth;
+    canvas1.height=window.innerHeight;
     var context=canvas1.getContext("2d");
+    var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
+    var verifyKey;
+    ws.onmessage=function(e){
+        verifyKey=e.data.split("标识")[1];
+    }
     if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
-
-        var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
-        ws.onmessage=function(ev){
+        var freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
+        freeGraphic2.ws.onmessage=function(ev){
 //            alert(ev.data);
             var getInfoAttr=JSON.parse(ev.data);
             console.log(getInfoAttr)
-            var freeGraphic2=new freeGraphic(getInfoAttr.shape.type,"canvas");
             freeGraphic2.isMouseDraw=false;
             freeGraphic2.shape=getInfoAttr.shape;
             freeGraphic2.shapeList=getInfoAttr.shapeList;
@@ -73,7 +74,7 @@
                 if(freeGraphic1){
                     freeGraphicSave=freeGraphic1;
                 }
-                freeGraphic1=new freeGraphic(type,"canvas");
+                freeGraphic1=new freeGraphic(type,"canvas",ws,verifyKey);
                 if(freeGraphicSave){
                     freeGraphic1.shape=freeGraphicSave.shape;
                     freeGraphic1.shapeList=freeGraphicSave.shapeList;

@@ -1,4 +1,4 @@
-function freeGraphic(type,canvas,ws){
+function freeGraphic(type,canvas,ws,verifyKey){
 	this._init(type,canvas);
 }
 freeGraphic.prototype={
@@ -19,9 +19,7 @@ freeGraphic.prototype={
 	    self.shapListJson=new Object();
 	    // Html连接webSocket demo
 	    self.ws =ws;
-	    self.ws.onmessage=function(ev){
-	    	alert(ev.data)
-		}
+	    self.verifyKey=verifyKey;
 	    self.canvas.onmousedown=function(e){
 	        self.isMouseDraw=true;
 	        self.mouseDown(e)
@@ -40,8 +38,6 @@ freeGraphic.prototype={
 	        this.isClick=true;
 	        this.startX=e.clientX;
 	        this.startY=e.clientY;
-	        console.log(this.startX)
-            console.log(this.startY)
 	    }
 	},
 	mouseMove:function(e){
@@ -69,7 +65,7 @@ freeGraphic.prototype={
 	            "endY": self.endY
 	        }
 	        self.shapeListJson={
-	        	key:10, //TODO  ，这里加个key 把连接时我返回给你的key传给我
+	        	key:self.verifyKey, //TODO  ，这里加个key 把连接时我返回给你的key传给我
 	            shapeList:self.shapeList,
 	            shape:self.shape
 	        }
