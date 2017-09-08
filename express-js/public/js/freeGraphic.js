@@ -1,8 +1,8 @@
 function freeGraphic(type,canvas,ws,verifyKey){
-	this._init(type,canvas);
+	this._init(type,canvas,ws,verifyKey);
 }
 freeGraphic.prototype={
-	_init:function(type,canvas){
+	_init:function(type,canvas,ws,verifyKey){
 	    var self=this;
 	    if(!type||type===undefined)
 	        return;

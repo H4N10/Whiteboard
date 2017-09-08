@@ -25,9 +25,9 @@
     var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
     var verifyKey;
     var freeGraphic1;
-//    ws.onmessage=function(e){
-//        verifyKey=e.data.split("标识")[1];
-//    }
+    ws.onmessage=function(e){
+        verifyKey=e.data.split("标识")[1];
+    }
     if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
         var freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
         freeGraphic2.ws.onmessage=function(ev){
