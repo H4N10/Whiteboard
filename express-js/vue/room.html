@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <link  rel="stylesheet" href="../css/public.css">
+</head>
+<body>
+<div class="canvasPanel">
+    <canvas id="canvas"></canvas>
+    <div class="buttonGroup">
+        <div  v-for="(graphic,index) in graphicAttr" :id="graphic.id" class="button" @click="newFreeGraphic(index+1)">{{graphic.name}}</div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue.js"></script>
+<script type="text/javascript" src="../js/vue-resource.js"></script>
+<script type="text/javascript" src="../js/freeGraphic.js"></script>
+<script type="text/javascript">
+
+
+    var canvas1=document.getElementById("canvas");
+    canvas1.width=window.innerWidth;
+    canvas1.height=window.innerHeight;
+    var context=canvas1.getContext("2d");
+    var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
+    var verifyKey;
+    var freeGraphic1;
+    ws.onmessage=function(e){
+        verifyKey=e.data.split("标识")[1];
+        if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
+            var freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
+            freeGraphic2.ws.onmessage=function(ev){
+                if(ev.data.split("标识").length!=2){
+                    var getInfoAttr=JSON.parse(ev.data);
+                    console.log(getInfoAttr)
+                    freeGraphic2.shapeListJson=getInfoAttr;
+                    freeGraphic2.isMouseDraw=false;
+                    freeGraphic2.shape=getInfoAttr.shape;
+                    freeGraphic2.shapeList=getInfoAttr.shapeList;
+                    freeGraphic2.startX=getInfoAttr.shape.startX;
+                    freeGraphic2.startY=getInfoAttr.shape.startY;
+                    freeGraphic2.endX=getInfoAttr.shape.endX;
+                    freeGraphic2.endY=getInfoAttr.shape.endY;
+                    freeGraphic2.type=getInfoAttr.shape.type;
+                    freeGraphic2.context.clearRect(0,0,freeGraphic2.canvas.width,freeGraphic2.canvas.height);
+                    freeGraphic2.drawGraphicType();
+                    if(getInfoAttr.shapeList[0]!=undefined&&getInfoAttr.shapeList.length!=0){
+                        for(var x=0;x<getInfoAttr.shapeList.length;x++){
+                            var getInfo=getInfoAttr.shapeList[x];
+                            freeGraphic2.startX=getInfo.startX;
+                            freeGraphic2.startY=getInfo.startY;
+                            freeGraphic2.endX=getInfo.endX;
+                            freeGraphic2.endY=getInfo.endY;
+                            freeGraphic2.type=getInfo.type;
+                            freeGraphic2.drawGraphicType();
+                        }
+                    }
+                }else{
+                    freeGraphic2.verifyKey=ev.data.split("标识")[1];
+                }
+            }
+        }
+    }
+    var vue=new Vue({
+        el:'.canvasPanel',
+        data:{
+            graphicAttr:[
+                {id:"line",name:"线"},
+                {id:"rectangle",name:"矩形"},
+                {id:"circle",name:"圆形"}
+            ]
+        },
+        methods:{
+            newFreeGraphic:function(type){
+                var freeGraphicSave;
+                if(freeGraphic1){
+                    freeGraphicSave=freeGraphic1;
+                }
+                freeGraphic1=new freeGraphic(type,"canvas",ws,verifyKey);
+                if(freeGraphicSave){
+                    freeGraphic1.shape=freeGraphicSave.shape;
+                    freeGraphic1.shapeList=freeGraphicSave.shapeList;
+                }
+                window.onbeforeunload=function (){
+//                    if(event.clientX>document.body.clientWidth && event.clientY < 0 || event.altKey){
+                        freeGraphic1.ws.close();
+//                    }else{
+//                        alert("你正在刷新页面");
+//                    }
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

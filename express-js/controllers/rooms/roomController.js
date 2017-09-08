@@ -2,12 +2,16 @@
 var rooms = require(process.cwd()+'/models/rooms/rooms');
 var ws = require('ws');
 var session = require('express-session');
+var bodyParser = require('body-parser');
+// var multer = require('multer');
 
 var util = require('util');
 var response = require(process.cwd()+'/models/result');
 
 var id = 0;
 var cons = new Array();
+var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 //创建webSocket服务器
 function createServer(port) {
     var WebSocketServer = ws.Server;
@@ -16,20 +20,19 @@ function createServer(port) {
         // verifyClient: socketverify //(可选)用于验证连接的函数
     });
     server.on('connection', function (socket) {
-        // var userId = ws.upgradeReq.headers['userid'];
-        // console.log(util.inspect(socket.upgradeReq, {depth: null}));
-        console.log('new connection successfully userId:' );
         cons.push(socket);
-        // userArray.push(userId);
+        console.log("用户连接："+cons.length);
+        // console.dir(socket);
+        socket.send("标识"+ cons.length);
         socket.on('message', function (message) {
-             for (var i=0; i<cons.length;i++) {
-                 console.log(message);                //判断userid是否为toUserId（发给指定的客户端）
-                // var msgObj = JSON.parse(message);
-                // if (userArray[i] == msgObj.toUserId) {
-                    cons[i].send('徐少秋');
-                    // break;
-                // }
+            var msg=JSON.parse(message);
+            for (var i = 0; i < cons.length; i++) {
+                if (i != msg.key-1) {
+                    console.dir(i)
+                    cons[i].send(message);//发给指定的客户端(除了发送方）
+                }
             }
+
 
         });
 
@@ -44,6 +47,9 @@ exports.controller = function (app) {
         resave: true,
         saveUninitialized:true
     }));
+    app.use(bodyParser.json()); // for parsing application/json
+    app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
+    // app.use(multer()); // for parsing multipart/form-data
 
     app.get('/rooms/getRoom', function (req, res) {
         var room = rooms.createRooms({
@@ -64,10 +70,22 @@ exports.controller = function (app) {
         res.send(jsonResult);
     });
     //进入房间
-    app.get('/rooms/comeIn',function (req,res) {
-        console.log("房间钥匙："+req.body.key);
-        req.session.roomkey= req.body.key;
-        res.sendfile('vue/'+'home.html');
+    app.post('/rooms/comeIn',urlencodedParser ,function (req,res) {
+        console.log(req.body.params.key);
+        var jsonResult ;
+        if(req.body.params.key){
+            req.session.roomkey= req.body.params.key;
+             jsonResult = response.JsonResult({
+                 data:null
+            })
+        }else{
+            jsonResult = response.JsonResult({
+                code:201,
+                msg:"房间钥匙未提交",
+                data:null
+            })
+        }
+        res.send(jsonResult);
 
     })
 }
