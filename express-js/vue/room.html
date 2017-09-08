@@ -30,29 +30,31 @@
     if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
         var freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
         freeGraphic2.ws.onmessage=function(ev){
-//            alert(ev.data);
-            var getInfoAttr=JSON.parse(ev.data);
-            console.log(getInfoAttr)
-            freeGraphic2.isMouseDraw=false;
-            freeGraphic2.shape=getInfoAttr.shape;
-            freeGraphic2.shapeList=getInfoAttr.shapeList;
-            freeGraphic2.startX=getInfoAttr.shape.startX;
-            freeGraphic2.startY=getInfoAttr.shape.startY;
-            freeGraphic2.endX=getInfoAttr.shape.endX;
-            freeGraphic2.endY=getInfoAttr.shape.endY;
-            freeGraphic2.type=getInfoAttr.shape.type;
-            freeGraphic2.context.clearRect(0,0,freeGraphic2.canvas.width,freeGraphic2.canvas.height);
-            freeGraphic2.drawGraphicType();
-            if(getInfoAttr.shapeList[0]!=undefined&&getInfoAttr.shapeList.length!=0){
-                for(var x=0;x<getInfoAttr.shapeList.length;x++){
-                    var getInfo=getInfoAttr.shapeList[x];
-                    console.log(getInfo)
-                    freeGraphic2.startX=getInfo.startX;
-                    freeGraphic2.startY=getInfo.startY;
-                    freeGraphic2.endX=getInfo.endX;
-                    freeGraphic2.endY=getInfo.endY;
-                    freeGraphic2.type=getInfo.type;
-                    freeGraphic2.drawGraphicType();
+            console.log(ev)
+            if(ev.data.split("标识").length!=2){
+                var getInfoAttr=JSON.parse(ev.data);
+                console.log(getInfoAttr)
+                freeGraphic2.isMouseDraw=false;
+                freeGraphic2.shape=getInfoAttr.shape;
+                freeGraphic2.shapeList=getInfoAttr.shapeList;
+                freeGraphic2.startX=getInfoAttr.shape.startX;
+                freeGraphic2.startY=getInfoAttr.shape.startY;
+                freeGraphic2.endX=getInfoAttr.shape.endX;
+                freeGraphic2.endY=getInfoAttr.shape.endY;
+                freeGraphic2.type=getInfoAttr.shape.type;
+                freeGraphic2.context.clearRect(0,0,freeGraphic2.canvas.width,freeGraphic2.canvas.height);
+                freeGraphic2.drawGraphicType();
+                if(getInfoAttr.shapeList[0]!=undefined&&getInfoAttr.shapeList.length!=0){
+                    for(var x=0;x<getInfoAttr.shapeList.length;x++){
+                        var getInfo=getInfoAttr.shapeList[x];
+                        console.log(getInfo)
+                        freeGraphic2.startX=getInfo.startX;
+                        freeGraphic2.startY=getInfo.startY;
+                        freeGraphic2.endX=getInfo.endX;
+                        freeGraphic2.endY=getInfo.endY;
+                        freeGraphic2.type=getInfo.type;
+                        freeGraphic2.drawGraphicType();
+                    }
                 }
             }
 
