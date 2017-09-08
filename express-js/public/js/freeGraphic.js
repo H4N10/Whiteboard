@@ -1,4 +1,4 @@
-function freeGraphic(type,canvas){
+function freeGraphic(type,canvas,ws){
 	this._init(type,canvas);
 }
 freeGraphic.prototype={
@@ -18,7 +18,10 @@ freeGraphic.prototype={
 	    self.shapeList=new Array();
 	    self.shapListJson=new Object();
 	    // Html连接webSocket demo
-	    self.ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
+	    self.ws =ws;
+	    self.ws.onmessage=function(ev){
+	    	alert(ev.data)
+		}
 	    self.canvas.onmousedown=function(e){
 	        self.isMouseDraw=true;
 	        self.mouseDown(e)
@@ -70,11 +73,9 @@ freeGraphic.prototype={
 	            shapeList:self.shapeList,
 	            shape:self.shape
 	        }
-	        console.log(self.shapeListJson)
 	        self.ws.send(JSON.stringify(self.shapeListJson))
 	    }
 	    self.drawGraphicType();
-	    console.log(self.shapeList)
 	    if(self.shapeList[0]!=undefined){
 	        for(var i=0;i<self.shapeList.length;i++){
 	            self.startX=self.shapeList[i].startX;
@@ -100,8 +101,6 @@ freeGraphic.prototype={
 	    this.context.strokeStyle="#15dde8";
 	    this.context.fillStyle="#15dde8";
 	    this.context.lineWidth=1;
-	    console.log(this.shape)
-        console.log(this.rect)
 	    this.startX=(this.startX-this.rect.left)*(this.canvas.width/this.rect.width);
 	    this.startY=(this.startY-this.rect.top)*(this.canvas.height/this.rect.height);
 	    this.endX=(this.endX-this.rect.left)*(this.canvas.width/this.rect.width);
