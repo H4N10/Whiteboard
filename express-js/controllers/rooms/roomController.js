@@ -38,10 +38,27 @@ function createServer(port) {
 
         });
         socket.on('close',function (code,reason) {
-            console.log("退出连接");
+            for(var i=0;i<cons.length; i++){
+                if(cons[i].socket ==  socket){
+                    cons.remove(i);
+                    console.log(cons.length);
+                }
+             }
+            console.log("退出连接"+code+":"+reason);
         })
     });
 }
+Array.prototype.remove = function (dx) {
+    if (isNaN(dx) || dx > this.length) {
+        return false;
+    }
+    for (var i = 0, n = 0; i < this.length; i++) {
+        if (this[i] != this[dx]) {
+            this[n++] = this[i];
+        }
+    }
+    this.length -= 1;
+};
 
 exports.controller = function (app) {
     //获取房间属性
