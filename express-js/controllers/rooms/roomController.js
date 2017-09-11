@@ -20,22 +20,26 @@ function createServer(port) {
         // verifyClient: socketverify //(可选)用于验证连接的函数
     });
     server.on('connection', function (socket) {
-        cons.push(socket);
+        var mSocket = new Object();
+        mSocket.socket = socket;
+        mSocket.port = port;
+        cons.push(mSocket);
         console.log("用户连接："+cons.length);
         // console.dir(socket);
         socket.send("标识"+ cons.length);
         socket.on('message', function (message) {
             var msg=JSON.parse(message);
             for (var i = 0; i < cons.length; i++) {
-                if (i != msg.key-1) {
+                if (i != msg.key-1 && cons[i].port == port) {
                     console.dir(i)
-                    cons[i].send(message);//发给指定的客户端(除了发送方）
+                    cons[i].socket.send(message);//发给指定的客户端(除了发送方）
                 }
             }
 
-
         });
-
+        socket.on('close',function (code,reason) {
+            console.log("退出连接");
+        })
     });
 }
 
