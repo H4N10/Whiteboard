@@ -17,6 +17,7 @@ freeGraphic.prototype={
 	    self.startX=self.startY=self.endX=self.endY=0;
 	    self.isClick=false;
 	    self.shapeList=new Array();
+	    self.pointArray=new Array();
 	    self.shapListJson=new Object();
 	    // Html连接webSocket demo
 	    self.ws =ws;
@@ -51,8 +52,16 @@ freeGraphic.prototype={
 	    }
 	},
 	mouseUp:function(e){
-	    this.isClick=false;
-	    this.shapeList.push(this.shape);
+		var self=this;
+        self.isClick=false;
+	    if(self.type!=4){
+            self.shapeList.push(self.shape);
+		}else{
+	    	for(var i=0;i<self.pointArray.length;i++){
+                self.shapeList.push(self.pointArray[i]);
+			}
+            self.pointArray.length=0;
+		}
 	},
 	drawGraphic:function(){
 	    this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
@@ -65,10 +74,17 @@ freeGraphic.prototype={
 	            "endX": self.endX,
 	            "endY": self.endY
 	        }
+	        if(self.shape.type!=4){
+	        	self.pointArray.length=0;
+	        	self.pointArray.push(self.shape);
+			}else{
+                self.pointArray.push(self.shape);
+			}
 	        self.shapeListJson={
 	        	key:self.verifyKey, //TODO  ，这里加个key 把连接时我返回给你的key传给我
 	            shapeList:self.shapeList,
-	            shape:self.shape
+	            shape:self.shape,
+				pointArray:self.pointArray
 	        }
 	        self.ws.send(JSON.stringify(self.shapeListJson))
 	    }
@@ -82,16 +98,30 @@ freeGraphic.prototype={
 	            self.type=self.shapeList[i].type;
 	            self.drawGraphicType();
 	        }
+	        for(var i=0;i<self.shapeListJson.pointArray.length;i++){
+	        	var shape=self.shapeListJson.pointArray[i];
+                self.startX=shape.startX;
+                self.startY=shape.startY;
+                self.endX=shape.endX;
+                self.endY=shape.endY;
+                self.type=shape.type;
+                self.drawGraphicType();
+			}
 	        self.startX=self.shape.startX;
 	        self.startY=self.shape.startY;
 	        self.endX=self.shape.endX;
 	        self.endY=self.shape.endY;
 	        self.type=self.shape.type;
 	    }
-        self.startX=self.shape.startX;
-        self.startY=self.shape.startY;
         self.endX=self.shape.endX;
         self.endY=self.shape.endY;
+	    if(self.shape.type!=4){
+            self.startX=self.shape.startX;
+            self.startY=self.shape.startY;
+		}else{
+            self.startX=self.shape.endX;
+            self.startY=self.shape.endY;
+		}
         self.type=self.shape.type;
 	},
 	drawGraphicType:function(){
@@ -112,6 +142,9 @@ freeGraphic.prototype={
 	        case 3:
 	            this.drawCircle();
 	            break;
+            case 4:
+                this.drawLine();
+                break;
 	    }
 	},
 	drawLine:function(){
