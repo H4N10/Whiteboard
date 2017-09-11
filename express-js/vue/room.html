@@ -23,6 +23,13 @@
     canvas1.height=window.innerHeight;
     var context=canvas1.getContext("2d");
     var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
+//    window.onbeforeunload=function (){
+////                    if(event.clientX>document.body.clientWidth && event.clientY < 0 || event.altKey){
+//        freeGraphic1.ws.close();
+////                    }else{
+////                        alert("你正在刷新页面");
+////                    }
+//    }
     var verifyKey;
     var freeGraphic1;
     ws.onmessage=function(e){
@@ -81,13 +88,6 @@
                 if(freeGraphicSave){
                     freeGraphic1.shape=freeGraphicSave.shape;
                     freeGraphic1.shapeList=freeGraphicSave.shapeList;
-                }
-                window.onbeforeunload=function (){
-//                    if(event.clientX>document.body.clientWidth && event.clientY < 0 || event.altKey){
-                        freeGraphic1.ws.close();
-//                    }else{
-//                        alert("你正在刷新页面");
-//                    }
                 }
             }
         }
