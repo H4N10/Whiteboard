@@ -86,6 +86,7 @@ freeGraphic.prototype={
 	            shape:self.shape,
 				pointArray:self.pointArray
 	        }
+	        console.log(self.shapeListJson)
 	        self.ws.send(JSON.stringify(self.shapeListJson))
 	    }
 	    self.drawGraphicType();

@@ -33,11 +33,14 @@
     var verifyKey;
     var freeGraphic2;
     ws.onmessage=function(e){
-        verifyKey=e.data.split("标识")[1];
+        if(e.data.split("标识").length==2)
+            verifyKey=e.data.split("标识")[1];
+        console.log(e.data)
         if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
             freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
+                    console.log(freeGraphic2.verifyKey)
                     var getInfoAttr=JSON.parse(ev.data);
 //                    console.log(getInfoAttr)
 //                    console.log(1)
