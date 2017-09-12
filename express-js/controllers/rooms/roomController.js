@@ -27,38 +27,40 @@ function createServer(port) {
         console.log("用户连接："+cons.length);
         // console.dir(socket);
         socket.send("标识"+ cons.length);
+        console.log("标识"+ cons.length);
         socket.on('message', function (message) {
             var msg=JSON.parse(message);
             for (var i = 0; i < cons.length; i++) {
-                if (i != msg.key-1 && cons[i].port == port) {
-                    console.dir(i)
-                    cons[i].socket.send(message);//发给指定的客户端(除了发送方）
+                if(cons[i]){
+                    console.log("发送的key："+msg.key+";连接池大小:"+cons.length+"；第"+i+"端口："+ cons[i].port+"長度"+cons.length);
+                    if (i != msg.key-1 && cons[i].port == port) {
+                        cons[i].socket.send(message);//发给指定的客户端(除了发送方）
+                    }
                 }
             }
 
         });
         socket.on('close',function (code,reason) {
             for(var i=0;i<cons.length; i++){
-                if(cons[i].socket ==  socket){
-                    cons.remove(i);
-                    console.log(cons.length);
-                }
+                if(cons[i]&&cons[i].socket ==  socket){
+                    cons[i] = null;
+                 }
              }
             console.log("退出连接"+code+":"+reason);
         })
     });
 }
-Array.prototype.remove = function (dx) {
-    if (isNaN(dx) || dx > this.length) {
-        return false;
-    }
-    for (var i = 0, n = 0; i < this.length; i++) {
-        if (this[i] != this[dx]) {
-            this[n++] = this[i];
-        }
-    }
-    this.length -= 1;
-};
+// Array.prototype.remove = function (dx) {
+//     if (isNaN(dx) || dx > this.length) {
+//         return false;
+//     }
+//     for (var i = 0, n = 0; i < this.length; i++) {
+//         if (this[i] != this[dx]) {
+//             this[n++] = this[i];
+//         }
+//     }
+//     this.length -= 1;
+// };
 
 exports.controller = function (app) {
     //获取房间属性
