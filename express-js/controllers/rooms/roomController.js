@@ -10,6 +10,7 @@ var response = require(process.cwd()+'/models/result');
 
 var id = 0;
 var cons = new Array();
+var shapes = new Array();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 //创建webSocket服务器
@@ -27,6 +28,8 @@ function createServer(port) {
         console.log("用户连接："+cons.length);
         // console.dir(socket);
         socket.send("标识"+ cons.length);
+        if(shapes[port])
+            socket.send(shapes[port]); //转发房间内已有图像
         console.log("标识"+ cons.length);
         socket.on('message', function (message) {
             var msg=JSON.parse(message);
@@ -34,6 +37,7 @@ function createServer(port) {
                 if(cons[i]){
                     console.log("发送的key："+msg.key+";连接池大小:"+cons.length+"；第"+i+"端口："+ cons[i].port+"長度"+cons.length);
                     if (i != msg.key-1 && cons[i].port == port) {
+                        shapes[port] = message;
                         cons[i].socket.send(message);//发给指定的客户端(除了发送方）
                     }
                 }
