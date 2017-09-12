@@ -35,27 +35,15 @@
     ws.onmessage=function(e){
         if(e.data.split("标识").length==2)
             verifyKey=e.data.split("标识")[1];
-        console.log(e.data)
-//        if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
-//        if(1==1){
             freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
-                    console.log(freeGraphic2.verifyKey)
                     var getInfoAttr=JSON.parse(ev.data);
-//                    console.log(getInfoAttr)
-//                    console.log(1)
                     freeGraphic2.shapeListJson=getInfoAttr;
                     freeGraphic2.isMouseDraw=false;
                     freeGraphic2.shape=getInfoAttr.shape;
                     freeGraphic2.shapeList=getInfoAttr.shapeList;
-                    freeGraphic2.shapeListJson=getInfoAttr.shapeListJson;
                     freeGraphic2.pointArray=getInfoAttr.pointArray;
-                    freeGraphic2.startX=getInfoAttr.shape.startX;
-                    freeGraphic2.startY=getInfoAttr.shape.startY;
-                    freeGraphic2.endX=getInfoAttr.shape.endX;
-                    freeGraphic2.endY=getInfoAttr.shape.endY;
-                    freeGraphic2.type=getInfoAttr.shape.type;
                     freeGraphic2.context.clearRect(0,0,freeGraphic2.canvas.width,freeGraphic2.canvas.height);
                     if(getInfoAttr.pointArray[0]!=undefined&&getInfoAttr.pointArray.length!=0){
                         for(var i=0;i<getInfoAttr.pointArray.length;i++){
@@ -79,11 +67,15 @@
                             freeGraphic2.drawGraphicType();
                         }
                     }
+                    freeGraphic2.startX=getInfoAttr.shape.startX;
+                    freeGraphic2.startY=getInfoAttr.shape.startY;
+                    freeGraphic2.endX=getInfoAttr.shape.endX;
+                    freeGraphic2.endY=getInfoAttr.shape.endY;
+                    freeGraphic2.type=getInfoAttr.shape.type;
                 }else{
                     freeGraphic2.verifyKey=ev.data.split("标识")[1];
                 }
             }
-//        }
     }
     var vue=new Vue({
         el:'.canvasPanel',
@@ -105,6 +97,8 @@
                 if(freeGraphicSave){
                     freeGraphic2.shape=freeGraphicSave.shape;
                     freeGraphic2.shapeList=freeGraphicSave.shapeList;
+                    freeGraphic2.pointArray=freeGraphicSave.pointArray;
+                    freeGraphic2.shapeListJson=freeGraphicSave.shapeListJson;
                 }
             }
         }
