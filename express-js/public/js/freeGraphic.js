@@ -112,7 +112,17 @@ freeGraphic.prototype={
 	        self.endX=self.shape.endX;
 	        self.endY=self.shape.endY;
 	        self.type=self.shape.type;
-	    }
+	    }else{
+            for(var i=0;i<self.shapeListJson.pointArray.length;i++){
+                var shape=self.shapeListJson.pointArray[i];
+                self.startX=shape.startX;
+                self.startY=shape.startY;
+                self.endX=shape.endX;
+                self.endY=shape.endY;
+                self.type=shape.type;
+                self.drawGraphicType();
+            }
+		}
         self.endX=self.shape.endX;
         self.endY=self.shape.endY;
 	    if(self.shape.type!=4){

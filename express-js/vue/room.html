@@ -31,11 +31,11 @@
 ////                    }
 //    }
     var verifyKey;
-    var freeGraphic1;
+    var freeGraphic2;
     ws.onmessage=function(e){
         verifyKey=e.data.split("标识")[1];
         if(window.sessionStorage.getItem("key")!=window.sessionStorage.getItem("isHost")){
-            var freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
+            freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
                     var getInfoAttr=JSON.parse(ev.data);
@@ -46,6 +46,7 @@
                     freeGraphic2.shape=getInfoAttr.shape;
                     freeGraphic2.shapeList=getInfoAttr.shapeList;
                     freeGraphic2.shapeListJson=getInfoAttr.shapeListJson;
+                    freeGraphic2.pointArray=getInfoAttr.pointArray;
                     freeGraphic2.startX=getInfoAttr.shape.startX;
                     freeGraphic2.startY=getInfoAttr.shape.startY;
                     freeGraphic2.endX=getInfoAttr.shape.endX;
@@ -93,13 +94,13 @@
         methods:{
             newFreeGraphic:function(type){
                 var freeGraphicSave;
-                if(freeGraphic1){
-                    freeGraphicSave=freeGraphic1;
+                if(freeGraphic2){
+                    freeGraphicSave=freeGraphic2;
                 }
-                freeGraphic1=new freeGraphic(type,"canvas",ws,verifyKey);
+                freeGraphic2=new freeGraphic(type,"canvas",ws,verifyKey);
                 if(freeGraphicSave){
-                    freeGraphic1.shape=freeGraphicSave.shape;
-                    freeGraphic1.shapeList=freeGraphicSave.shapeList;
+                    freeGraphic2.shape=freeGraphicSave.shape;
+                    freeGraphic2.shapeList=freeGraphicSave.shapeList;
                 }
             }
         }
