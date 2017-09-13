@@ -33,11 +33,11 @@ function createServer(port) {
         console.log("标识"+ cons.length);
         socket.on('message', function (message) {
             var msg=JSON.parse(message);
+            shapes[port] = message;
             for (var i = 0; i < cons.length; i++) {
                 if(cons[i]){
                     console.log("发送的key："+msg.key+";连接池大小:"+cons.length+"；第"+i+"端口："+ cons[i].port+"長度"+cons.length);
                     if (i != msg.key-1 && cons[i].port == port) {
-                        shapes[port] = message;
                         cons[i].socket.send(message);//发给指定的客户端(除了发送方）
                     }
                 }
