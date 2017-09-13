@@ -61,7 +61,7 @@
                         if(response.body.code==200){
                           var data=response.body.data;
                           window.sessionStorage.setItem("key",data.key);
-                          window.sessionStorage.setItem("isHost",data.key);
+//                          window.sessionStorage.setItem("isHost",data.key);
                            window.location.href="../view/room";
                         }else{
                             alert(response.body.code)
