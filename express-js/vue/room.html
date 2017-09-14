@@ -42,9 +42,11 @@
     }
     window.onkeydown=function(e){
         if(e.keyCode==90&&e.ctrlKey){
+            console.log(freeGraphic2.shapeList)
             freeGraphic2.shapeList.pop();
             freeGraphic2.shapeListJson.shapeList=freeGraphic2.shapeList;
-            drawSaveShape(freeGraphic2.shapeListJson,freeGraphic2);
+//            drawSaveShape(freeGraphic2.shapeListJson,freeGraphic2);
+            freeGraphic2.ws.send(JSON.stringify(freeGraphic2.shapeListJson));
         }
     }
     var vue=new Vue({
