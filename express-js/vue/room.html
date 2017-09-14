@@ -23,12 +23,7 @@
     canvas1.height=window.innerHeight;
     var context=canvas1.getContext("2d");
     var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
-//    window.onbeforeunload=function (){
-////                    if(event.clientX>document.body.clientWidth && event.clientY < 0 || event.altKey){
-//        freeGraphic1.ws.close();
-////                    }else{
-////                        alert("你正在刷新页面");
-////                    }
+//    window.onresize=function(e){
 //    }
     var verifyKey;
     var freeGraphic2;
@@ -39,43 +34,18 @@
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
                     var getInfoAttr=JSON.parse(ev.data);
-                    freeGraphic2.shapeListJson=getInfoAttr;
-                    freeGraphic2.isMouseDraw=false;
-                    freeGraphic2.shape=getInfoAttr.shape;
-                    freeGraphic2.shapeList=getInfoAttr.shapeList;
-                    freeGraphic2.pointArray=getInfoAttr.pointArray;
-                    freeGraphic2.context.clearRect(0,0,freeGraphic2.canvas.width,freeGraphic2.canvas.height);
-                    if(getInfoAttr.pointArray[0]!=undefined&&getInfoAttr.pointArray.length!=0){
-                        for(var i=0;i<getInfoAttr.pointArray.length;i++){
-                            var getInfo=getInfoAttr.pointArray[i];
-                            freeGraphic2.startX=getInfo.startX;
-                            freeGraphic2.startY=getInfo.startY;
-                            freeGraphic2.endX=getInfo.endX;
-                            freeGraphic2.endY=getInfo.endY;
-                            freeGraphic2.type=getInfo.type;
-                            freeGraphic2.drawGraphicType();
-                        }
-                    }
-                    if(getInfoAttr.shapeList[0]!=undefined&&getInfoAttr.shapeList.length!=0){
-                        for(var x=0;x<getInfoAttr.shapeList.length;x++){
-                            var getInfo=getInfoAttr.shapeList[x];
-                            freeGraphic2.startX=getInfo.startX;
-                            freeGraphic2.startY=getInfo.startY;
-                            freeGraphic2.endX=getInfo.endX;
-                            freeGraphic2.endY=getInfo.endY;
-                            freeGraphic2.type=getInfo.type;
-                            freeGraphic2.drawGraphicType();
-                        }
-                    }
-                    freeGraphic2.startX=getInfoAttr.shape.startX;
-                    freeGraphic2.startY=getInfoAttr.shape.startY;
-                    freeGraphic2.endX=getInfoAttr.shape.endX;
-                    freeGraphic2.endY=getInfoAttr.shape.endY;
-                    freeGraphic2.type=getInfoAttr.shape.type;
+                    drawSaveShape(getInfoAttr,freeGraphic2);
                 }else{
                     freeGraphic2.verifyKey=ev.data.split("标识")[1];
                 }
             }
+    }
+    window.onkeydown=function(e){
+        if(e.keyCode==90&&e.ctrlKey){
+            freeGraphic2.shapeList.pop();
+            freeGraphic2.shapeListJson.shapeList=freeGraphic2.shapeList;
+            drawSaveShape(freeGraphic2.shapeListJson,freeGraphic2);
+        }
     }
     var vue=new Vue({
         el:'.canvasPanel',

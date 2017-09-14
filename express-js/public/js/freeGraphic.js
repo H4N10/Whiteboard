@@ -36,13 +36,12 @@ freeGraphic.prototype={
 	},
 	mouseDown:function(e){
 		var self=this;
+
 	    if(1 == e.which){
-	    	if(self.pointArray.length!=0&&self.pointArray[0]!=undefined){
-                for(var i=0;i<self.pointArray.length;i++){
-                    self.shapeList.push(self.pointArray[i]);
-                }
-                self.pointArray.length=0;
-			}
+            if(self.pointArray[0]!=undefined&&self.pointArray.length!=0){
+                self.shapeList.push(self.pointArray);
+                self.pointArray=new Array();
+            }
 	        this.isClick=true;
 	        this.startX=e.clientX;
 	        this.startY=e.clientY;
@@ -63,10 +62,8 @@ freeGraphic.prototype={
 	    if(self.type!=4){
             self.shapeList.push(self.shape);
 		}else{
-	    	for(var i=0;i<self.pointArray.length;i++){
-                self.shapeList.push(self.pointArray[i]);
-			}
-            self.pointArray.length=0;
+            self.shapeList.push(self.pointArray);
+            self.pointArray=new Array();
 		}
 	},
 	drawGraphic:function(){
@@ -91,26 +88,7 @@ freeGraphic.prototype={
 	        }
 	        self.ws.send(JSON.stringify(self.shapeListJson))
 	    }
-	    self.drawGraphicType();
-	    if(self.shapeList[0]!=undefined){
-	        for(var i=0;i<self.shapeList.length;i++){
-	            self.startX=self.shapeList[i].startX;
-	            self.startY=self.shapeList[i].startY;
-	            self.endX=self.shapeList[i].endX;
-	            self.endY=self.shapeList[i].endY;
-	            self.type=self.shapeList[i].type;
-	            self.drawGraphicType();
-	        }
-	    }
-        for(var i=0;i<self.shapeListJson.pointArray.length;i++){
-            var shape=self.shapeListJson.pointArray[i];
-            self.startX=shape.startX;
-            self.startY=shape.startY;
-            self.endX=shape.endX;
-            self.endY=shape.endY;
-            self.type=shape.type;
-            self.drawGraphicType();
-        }
+        drawSaveShape(self.shapeListJson,self);
 	    if(self.shape.type!=4){
             self.startX=self.shape.startX;
             self.startY=self.shape.startY;
@@ -166,4 +144,51 @@ freeGraphic.prototype={
 	    this.context.restore();
 	}
 
+}
+
+//绘制保存的图像信息
+function drawSaveShape(obj,obj2){
+    obj2.shapeListJson=obj;
+    obj2.isMouseDraw=false;
+    obj2.shape=obj.shape;
+    obj2.shapeList=obj.shapeList;
+    obj2.pointArray=obj.pointArray;
+    obj2.context.clearRect(0,0,obj2.canvas.width,obj2.canvas.height);
+    if(obj.pointArray[0]!=undefined&&obj.pointArray.length!=0){
+        for(var i=0;i<obj.pointArray.length;i++){
+            var getInfo=obj.pointArray[i];
+            attrChange(getInfo,obj2)
+            obj2.drawGraphicType();
+        }
+    }
+    if(obj.shapeList[0]!=undefined&&obj.shapeList.length!=0){
+        for(var i=0;i<obj.shapeList.length;i++){
+            var getInfo=obj.shapeList[i];
+            if(isArray(getInfo)){
+            	for(var j=0;j<obj.shapeList[i].length;j++){
+            		var getInfo2=obj.shapeList[i][j];
+                    attrChange(getInfo2,obj2);
+                    obj2.drawGraphicType();
+				}
+			}else{
+                attrChange(getInfo,obj2)
+                obj2.drawGraphicType();
+			}
+        }
+    }
+    attrChange(obj.shape,obj2);
+}
+
+//参数赋值
+function attrChange(obj,obj2){
+    obj2.startX=obj.startX;
+    obj2.startY=obj.startY;
+    obj2.endX=obj.endX;
+    obj2.endY=obj.endY;
+    obj2.type=obj.type;
+}
+
+//判断是否是数组
+function isArray(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
 }
