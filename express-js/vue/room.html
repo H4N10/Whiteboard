@@ -21,6 +21,8 @@
     var canvas1=document.getElementById("canvas");
     canvas1.width=window.innerWidth;
     canvas1.height=window.innerHeight;
+//    canvas1.width=500;
+//    canvas1.height=600;
     var context=canvas1.getContext("2d");
     var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
 //    window.onresize=function(e){
@@ -42,11 +44,18 @@
     }
     window.onkeydown=function(e){
         if(e.keyCode==90&&e.ctrlKey){
-            console.log(freeGraphic2.shapeList)
+            for(var i=freeGraphic2.shapeList.length-1;i>0;i--){
+//                if(freeGraphic2.shapeList[i].key==verifyKey||freeGraphic2.shapeList[i][0].key==verifyKey){
+//                    freeGraphic2.shapeList.splice(i,1);
+//                    break;
+//                }
+                console.log(freeGraphic2.shapeList[i])
+                console.log(freeGraphic2.shapeList[i].key)
+            }
             freeGraphic2.shapeList.pop();
             freeGraphic2.shapeListJson.shapeList=freeGraphic2.shapeList;
-//            drawSaveShape(freeGraphic2.shapeListJson,freeGraphic2);
             freeGraphic2.ws.send(JSON.stringify(freeGraphic2.shapeListJson));
+            drawSaveShape(freeGraphic2.shapeListJson,freeGraphic2);
         }
     }
     var vue=new Vue({

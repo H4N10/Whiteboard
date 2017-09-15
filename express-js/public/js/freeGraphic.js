@@ -12,7 +12,6 @@ freeGraphic.prototype={
 	    self.isMouseDraw=false;
 	    self.canvas=document.getElementById("canvas");
 	    self.context=this.canvas.getContext("2d");
-        self.rect=self.canvas.getBoundingClientRect();
 	    self.startX=self.startY=self.endX=self.endY=0;
 	    self.isClick=false;
 	    self.shapeList=new Array();
@@ -38,19 +37,26 @@ freeGraphic.prototype={
 		var self=this;
 
 	    if(1 == e.which){
-            if(self.pointArray[0]!=undefined&&self.pointArray.length!=0){
-                self.shapeList.push(self.pointArray);
-                self.pointArray=new Array();
-            }
+            // if(self.pointArray[0]!=undefined&&self.pointArray.length!=0){
+            //     self.shapeList.push(self.pointArray);
+            //     self.pointArray=new Array();
+            // }
 	        this.isClick=true;
 	        this.startX=e.clientX;
 	        this.startY=e.clientY;
+            self.rect=self.canvas.getBoundingClientRect();
+            self.startX=(self.startX-self.rect.left)*(self.canvas.width/self.rect.width);
+            self.startY=(self.startY-self.rect.top)*(self.canvas.height/self.rect.height);
 	    }
 	},
 	mouseMove:function(e){
+		var self=this;
 	    if(this.isClick){
 	        this.endX=e.clientX;
 	        this.endY=e.clientY;
+            self.rect=self.canvas.getBoundingClientRect();
+            self.endX=(self.endX-self.rect.left)*(self.canvas.width/self.rect.width);
+            self.endY=(self.endY-self.rect.top)*(self.canvas.height/self.rect.height);
 	        this.drawGraphic();
 	    }else{
 	        return;
@@ -75,11 +81,14 @@ freeGraphic.prototype={
 	            "startX": self.startX,
 	            "startY": self.startY,
 	            "endX": self.endX,
-	            "endY": self.endY
+	            "endY": self.endY,
+				"key":self.verifyKey
 	        }
 	        if(self.shape.type!=4)
-	        	self.pointArray.length=0;
-			self.pointArray.push(self.shape);
+	        	self.pointArray=new Array();
+	        else{
+                self.pointArray.push(self.shape);
+			}
 	        self.shapeListJson={
 	        	key:self.verifyKey, //TODO  ，这里加个key 把连接时我返回给你的key传给我
 	            shapeList:self.shapeList,
@@ -99,13 +108,10 @@ freeGraphic.prototype={
         self.type=self.shape.type;
 	},
 	drawGraphicType:function(){
+		var self=this;
 	    this.context.strokeStyle="#15dde8";
 	    this.context.fillStyle="#15dde8";
 	    this.context.lineWidth=1;
-	    this.startX=(this.startX-this.rect.left)*(this.canvas.width/this.rect.width);
-	    this.startY=(this.startY-this.rect.top)*(this.canvas.height/this.rect.height);
-	    this.endX=(this.endX-this.rect.left)*(this.canvas.width/this.rect.width);
-	    this.endY=(this.endY-this.rect.top)*(this.canvas.height/this.rect.height);
 	    switch(this.type){
 	        case 1:
 	            this.drawLine();
@@ -154,6 +160,8 @@ function drawSaveShape(obj,obj2){
     obj2.shapeList=obj.shapeList;
     obj2.pointArray=obj.pointArray;
     obj2.context.clearRect(0,0,obj2.canvas.width,obj2.canvas.height);
+    attrChange(obj2.shape,obj2);
+    obj2.drawGraphicType();
     if(obj.pointArray[0]!=undefined&&obj.pointArray.length!=0){
         for(var i=0;i<obj.pointArray.length;i++){
             var getInfo=obj.pointArray[i];

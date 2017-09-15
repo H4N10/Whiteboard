@@ -112,6 +112,7 @@ html,body{
     background:#000;
     /*margin-top:50px;*/
     /*margin-left:50px;*/
+    margin:0 auto;
     display:block;
 }
 .buttonGroup{
