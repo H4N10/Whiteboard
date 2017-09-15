@@ -37,10 +37,6 @@ freeGraphic.prototype={
 		var self=this;
 
 	    if(1 == e.which){
-            // if(self.pointArray[0]!=undefined&&self.pointArray.length!=0){
-            //     self.shapeList.push(self.pointArray);
-            //     self.pointArray=new Array();
-            // }
 	        this.isClick=true;
 	        this.startX=e.clientX;
 	        this.startY=e.clientY;
@@ -154,14 +150,12 @@ freeGraphic.prototype={
 
 //绘制保存的图像信息
 function drawSaveShape(obj,obj2){
-    obj2.shapeListJson=obj;
     obj2.isMouseDraw=false;
+    obj2.shapeListJson=obj;
     obj2.shape=obj.shape;
     obj2.shapeList=obj.shapeList;
     obj2.pointArray=obj.pointArray;
     obj2.context.clearRect(0,0,obj2.canvas.width,obj2.canvas.height);
-    attrChange(obj2.shape,obj2);
-    obj2.drawGraphicType();
     if(obj.pointArray[0]!=undefined&&obj.pointArray.length!=0){
         for(var i=0;i<obj.pointArray.length;i++){
             var getInfo=obj.pointArray[i];
@@ -185,6 +179,7 @@ function drawSaveShape(obj,obj2){
         }
     }
     attrChange(obj.shape,obj2);
+    obj2.drawGraphicType();
 }
 
 //参数赋值

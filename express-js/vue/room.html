@@ -36,6 +36,7 @@
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
                     var getInfoAttr=JSON.parse(ev.data);
+                    console.log(getInfoAttr)
                     drawSaveShape(getInfoAttr,freeGraphic2);
                 }else{
                     freeGraphic2.verifyKey=ev.data.split("标识")[1];
@@ -70,17 +71,10 @@
         },
         methods:{
             newFreeGraphic:function(type){
-                var freeGraphicSave;
-                if(freeGraphic2){
-                    freeGraphicSave=freeGraphic2;
+                if(!freeGraphic2){
+                    freeGraphic2=new freeGraphic(type,"canvas",ws,verifyKey);
                 }
-                freeGraphic2=new freeGraphic(type,"canvas",ws,verifyKey);
-                if(freeGraphicSave){
-                    freeGraphic2.shape=freeGraphicSave.shape;
-                    freeGraphic2.shapeList=freeGraphicSave.shapeList;
-                    freeGraphic2.pointArray=freeGraphicSave.pointArray;
-                    freeGraphic2.shapeListJson=freeGraphicSave.shapeListJson;
-                }
+                freeGraphic2.type=type;
             }
         }
     })
