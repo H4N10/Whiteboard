@@ -210,3 +210,13 @@ function attrChange(obj,obj2){
 function isArray(obj) {
     return Object.prototype.toString.call(obj) === '[object Array]';
 }
+
+//删除数组对象index位置元素
+function spliceAttr(arr,index){
+	var newArr=new Array();
+	for(var i=0;i<arr.length;i++){
+		if(i!=index)
+			newArr.push(arr[i]);
+	}
+	return newArr;
+}
