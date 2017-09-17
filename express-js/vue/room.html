@@ -11,6 +11,25 @@
     <div class="buttonGroup">
         <div  v-for="(graphic,index) in graphicAttr" :id="graphic.id" class="button" @click="newFreeGraphic(index+1)">{{graphic.name}}</div>
     </div>
+    <div class="colorPanel">
+        <div class="fontPanel">
+            <ul>
+                <li v-for="(fontSize,index) in font" @click="changeFontSize(fontSize,index)">
+                    <i :style="{width:fontSize+'px',height:fontSize+'px'}"></i>
+                </li>
+            </ul>
+        </div>
+        <div class="colorContainer">
+            <div class="colorCurrent">
+                <i :style="{background:currentColor}"></i>
+            </div>
+            <ul>
+                <li v-for="(color,index) in colors" @click="changeColor(color)">
+                    <i :style="{background: color}"></i>
+                </li>
+            </ul>
+        </div>
+    </div>
 </div>
 <script type="text/javascript" src="../js/vue.js"></script>
 <script type="text/javascript" src="../js/vue-resource.js"></script>
@@ -21,12 +40,8 @@
     var canvas1=document.getElementById("canvas");
     canvas1.width=window.innerWidth;
     canvas1.height=window.innerHeight;
-//    canvas1.width=500;
-//    canvas1.height=600;
     var context=canvas1.getContext("2d");
     var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
-//    window.onresize=function(e){
-//    }
     var verifyKey;
     var freeGraphic2;
     freeGraphic2=new freeGraphic(1,"canvas",ws,1);
@@ -49,7 +64,6 @@
                 try{
                     if(freeGraphic2.shapeList[i].key==verifyKey||freeGraphic2.shapeList[i][0].key==verifyKey){
                         freeGraphic2.shapeList=spliceAttr(freeGraphic2.shapeList,i);
-                        console.log(freeGraphic2.shapeList)
                         break;
                     }
                 }
@@ -62,6 +76,14 @@
             drawSaveShape(freeGraphic2.shapeListJson,freeGraphic2);
         }
     }
+
+//    var html="";
+//    html+='<div class="colorPanel">';
+//    html+=''
+//    var colorPanelComponent={
+//        template:html
+//    }
+
     var vue=new Vue({
         el:'.canvasPanel',
         data:{
@@ -70,7 +92,11 @@
                 {id:"rectangle",name:"矩形"},
                 {id:"circle",name:"圆形"},
                 {id:"freeLine",name:"自由画线"}
-            ]
+            ],
+            font:[2,4,8],
+            colors:["#ffffff","#000000","#c0c0c0","#808080","#fb3838","#800000","#ffff00","#f7883a","#99cc00","#308430","#3894e4","#385ad3","#f31bf3","#800080","#16dcdc","#009999"],
+            currentFontSize:1,
+            currentColor:"#fff"
         },
         methods:{
             newFreeGraphic:function(type){
@@ -80,8 +106,22 @@
 //                console.log(freeGraphic2)
                 freeGraphic2.verifyKey=verifyKey;
                 freeGraphic2.type=type;
+            },
+            changeFontSize:function(size,index){
+                this.currentFontSize=size;
+                freeGraphic2.lineWidth=size;
+                if(document.getElementsByClassName("active")[0])
+                    document.getElementsByClassName("active")[0].className="";
+                    document.querySelectorAll(".fontPanel>ul>li")[index].className="active";
+            },
+            changeColor:function(color){
+                this.currentColor=color;
+                freeGraphic2.color=color;
             }
         }
+//        components:{
+//            'colorPanel':colorPanelComponent
+//        }
     })
 </script>
 </body>

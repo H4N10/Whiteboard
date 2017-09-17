@@ -10,6 +10,8 @@ freeGraphic.prototype={
 	        return;
 	    self.type=type;
 	    self.isMouseDraw=false;
+	    self.lineWidth=1;
+	    self.color="#fff";
 	    self.canvas=document.getElementById("canvas");
 	    self.context=this.canvas.getContext("2d");
 	    self.startX=self.startY=self.endX=self.endY=0;
@@ -91,7 +93,9 @@ freeGraphic.prototype={
 	            "startY": self.startY,
 	            "endX": self.endX,
 	            "endY": self.endY,
-				"key":self.verifyKey
+				"key":self.verifyKey,
+				"lineWidth":self.lineWidth,
+				"color":self.color
 	        }
 	        if(self.shape.type!=4)
 	        	self.pointArray=new Array();
@@ -116,11 +120,11 @@ freeGraphic.prototype={
 		}
         self.type=self.shape.type;
 	},
-	drawGraphicType:function(){
+	drawGraphicType:function(lineWidth,color){
 		var self=this;
-	    this.context.strokeStyle="#15dde8";
-	    this.context.fillStyle="#15dde8";
-	    this.context.lineWidth=1;
+	    this.context.strokeStyle=color;
+	    this.context.fillStyle=color;
+	    this.context.lineWidth=lineWidth;
 	    switch(this.type){
 	        case 1:
 	            this.drawLine();
@@ -173,7 +177,7 @@ function drawSaveShape(obj,obj2){
         for(var i=0;i<obj.pointArray.length;i++){
             var getInfo=obj.pointArray[i];
             attrChange(getInfo,obj2)
-            obj2.drawGraphicType();
+            obj2.drawGraphicType(getInfo.lineWidth,getInfo.color);
         }
     }
     if(obj.shapeList[0]!=undefined&&obj.shapeList.length!=0){
@@ -183,17 +187,17 @@ function drawSaveShape(obj,obj2){
             	for(var j=0;j<obj.shapeList[i].length;j++){
             		var getInfo2=obj.shapeList[i][j];
                     attrChange(getInfo2,obj2);
-                    obj2.drawGraphicType();
+                    obj2.drawGraphicType(getInfo2.lineWidth,getInfo2.color);
 				}
 			}else{
                 attrChange(getInfo,obj2)
-                obj2.drawGraphicType();
+                obj2.drawGraphicType(getInfo.lineWidth,getInfo.color);
 			}
         }
     }
     if(obj.shape.startX!=undefined){
         attrChange(obj.shape,obj2);
-        obj2.drawGraphicType();
+        obj2.drawGraphicType(obj.shape.lineWidth,obj.shape.color);
 	}
 }
 
@@ -204,6 +208,8 @@ function attrChange(obj,obj2){
     obj2.endX=obj.endX;
     obj2.endY=obj.endY;
     obj2.type=obj.type;
+    obj2.lineWidth=obj.lineWidth;
+    obj2.color=obj.color;
 }
 
 //判断是否是数组
