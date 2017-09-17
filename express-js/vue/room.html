@@ -29,14 +29,14 @@
 //    }
     var verifyKey;
     var freeGraphic2;
+    freeGraphic2=new freeGraphic(1,"canvas",ws,1);
     ws.onmessage=function(e){
         if(e.data.split("标识").length==2)
             verifyKey=e.data.split("标识")[1];
-            freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
+            freeGraphic2._init(1,"canvas",ws,verifyKey);
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
                     var getInfoAttr=JSON.parse(ev.data);
-                    console.log(getInfoAttr)
                     drawSaveShape(getInfoAttr,freeGraphic2);
                 }else{
                     freeGraphic2.verifyKey=ev.data.split("标识")[1];
@@ -46,12 +46,16 @@
     window.onkeydown=function(e){
         if(e.keyCode==90&&e.ctrlKey){
             for(var i=freeGraphic2.shapeList.length-1;i>0;i--){
-//                if(freeGraphic2.shapeList[i].key==verifyKey||freeGraphic2.shapeList[i][0].key==verifyKey){
-//                    freeGraphic2.shapeList.splice(i,1);
-//                    break;
-//                }
                 console.log(freeGraphic2.shapeList[i])
-                console.log(freeGraphic2.shapeList[i].key)
+                try{
+                if(freeGraphic2.shapeList[i].key==verifyKey||freeGraphic2.shapeList[i][0].key==verifyKey){
+                    freeGraphic2.shapeList.splice(i,1);
+                    break;
+                }
+                }
+                catch(e){
+                    console.log(e)
+                }
             }
             freeGraphic2.shapeList.pop();
             freeGraphic2.shapeListJson.shapeList=freeGraphic2.shapeList;
@@ -71,9 +75,11 @@
         },
         methods:{
             newFreeGraphic:function(type){
-                if(!freeGraphic2){
-                    freeGraphic2=new freeGraphic(type,"canvas",ws,verifyKey);
-                }
+//                if(!freeGraphic2){
+//                    freeGraphic2._init(type,"canvas",ws,verifyKey);
+//                }
+//                console.log(freeGraphic2)
+                freeGraphic2.verifyKey=verifyKey;
                 freeGraphic2.type=type;
             }
         }

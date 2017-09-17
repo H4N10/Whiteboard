@@ -20,18 +20,22 @@ freeGraphic.prototype={
 	    // Html连接webSocket demo
 	    self.ws =ws;
 	    self.verifyKey=verifyKey;
-	    self.canvas.onmousedown=function(e){
-	        self.isMouseDraw=true;
-	        self.mouseDown(e)
-	    }
-	    self.canvas.onmousemove=function(e){
-	        self.isMouseDraw=true;
-	        self.mouseMove(e);
-	    }
-	    self.canvas.onmouseup=function(e){
-	        self.isMouseDraw=false;
-	        self.mouseUp(e);
-	    }
+	    self.eventFunction();
+	},
+	eventFunction:function(){
+		var self=this;
+        self.canvas.onmousedown=function(e){
+            self.isMouseDraw=true;
+            self.mouseDown(e)
+        }
+        self.canvas.onmousemove=function(e){
+            self.isMouseDraw=true;
+            self.mouseMove(e);
+        }
+        self.canvas.onmouseup=function(e){
+            self.isMouseDraw=false;
+            self.mouseUp(e);
+        }
 	},
 	mouseDown:function(e){
 		var self=this;
@@ -60,13 +64,22 @@ freeGraphic.prototype={
 	},
 	mouseUp:function(e){
 		var self=this;
-        self.isClick=false;
-	    if(self.type!=4){
+	    if(self.type!=4) {
             self.shapeList.push(self.shape);
-		}else{
+        }else{
             self.shapeList.push(self.pointArray);
             self.pointArray=new Array();
 		}
+        self.shapeListJson={
+            key:self.verifyKey, //TODO  ，这里加个key 把连接时我返回给你的key传给我
+            shapeList:self.shapeList,
+            shape:self.shape,
+            pointArray:self.pointArray
+        }
+        if(self.type!=4)
+        	self.shapeListJson.shape={};
+        self.ws.send(JSON.stringify(self.shapeListJson))
+        self.isClick=false;
 	},
 	drawGraphic:function(){
 	    this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
@@ -91,9 +104,9 @@ freeGraphic.prototype={
 	            shape:self.shape,
 				pointArray:self.pointArray
 	        }
+            drawSaveShape(self.shapeListJson,self);
 	        self.ws.send(JSON.stringify(self.shapeListJson))
 	    }
-        drawSaveShape(self.shapeListJson,self);
 	    if(self.shape.type!=4){
             self.startX=self.shape.startX;
             self.startY=self.shape.startY;
@@ -178,8 +191,10 @@ function drawSaveShape(obj,obj2){
 			}
         }
     }
-    attrChange(obj.shape,obj2);
-    obj2.drawGraphicType();
+    if(obj.shape.startX!=undefined){
+        attrChange(obj.shape,obj2);
+        obj2.drawGraphicType();
+	}
 }
 
 //参数赋值
