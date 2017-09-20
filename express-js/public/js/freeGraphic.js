@@ -10,9 +10,10 @@ freeGraphic.prototype={
 	        return;
 	    self.type=type;
 	    self.isMouseDraw=false;
+	    self.lineWidth=1;
+	    self.color="#fff";
 	    self.canvas=document.getElementById("canvas");
 	    self.context=this.canvas.getContext("2d");
-        self.rect=self.canvas.getBoundingClientRect();
 	    self.startX=self.startY=self.endX=self.endY=0;
 	    self.isClick=false;
 	    self.shapeList=new Array();
@@ -21,37 +22,43 @@ freeGraphic.prototype={
 	    // Html连接webSocket demo
 	    self.ws =ws;
 	    self.verifyKey=verifyKey;
-	    self.canvas.onmousedown=function(e){
-	        self.isMouseDraw=true;
-	        self.mouseDown(e)
-	    }
-	    self.canvas.onmousemove=function(e){
-	        self.isMouseDraw=true;
-	        self.mouseMove(e);
-	    }
-	    self.canvas.onmouseup=function(e){
-	        self.isMouseDraw=false;
-	        self.mouseUp(e);
-	    }
+	    self.eventFunction();
+	},
+	eventFunction:function(){
+		var self=this;
+        self.canvas.onmousedown=function(e){
+            self.isMouseDraw=true;
+            self.mouseDown(e)
+        }
+        self.canvas.onmousemove=function(e){
+            self.isMouseDraw=true;
+            self.mouseMove(e);
+        }
+        self.canvas.onmouseup=function(e){
+            self.isMouseDraw=false;
+            self.mouseUp(e);
+        }
 	},
 	mouseDown:function(e){
 		var self=this;
+
 	    if(1 == e.which){
-	    	if(self.pointArray.length!=0&&self.pointArray[0]!=undefined){
-                for(var i=0;i<self.pointArray.length;i++){
-                    self.shapeList.push(self.pointArray[i]);
-                }
-                self.pointArray.length=0;
-			}
 	        this.isClick=true;
 	        this.startX=e.clientX;
 	        this.startY=e.clientY;
+            self.rect=self.canvas.getBoundingClientRect();
+            self.startX=(self.startX-self.rect.left)*(self.canvas.width/self.rect.width);
+            self.startY=(self.startY-self.rect.top)*(self.canvas.height/self.rect.height);
 	    }
 	},
 	mouseMove:function(e){
+		var self=this;
 	    if(this.isClick){
 	        this.endX=e.clientX;
 	        this.endY=e.clientY;
+            self.rect=self.canvas.getBoundingClientRect();
+            self.endX=(self.endX-self.rect.left)*(self.canvas.width/self.rect.width);
+            self.endY=(self.endY-self.rect.top)*(self.canvas.height/self.rect.height);
 	        this.drawGraphic();
 	    }else{
 	        return;
@@ -59,15 +66,22 @@ freeGraphic.prototype={
 	},
 	mouseUp:function(e){
 		var self=this;
-        self.isClick=false;
-	    if(self.type!=4){
+	    if(self.type!=4) {
             self.shapeList.push(self.shape);
-		}else{
-	    	for(var i=0;i<self.pointArray.length;i++){
-                self.shapeList.push(self.pointArray[i]);
-			}
-            self.pointArray.length=0;
+        }else{
+            self.shapeList.push(self.pointArray);
+            self.pointArray=new Array();
 		}
+        self.shapeListJson={
+            key:self.verifyKey, //TODO  ，这里加个key 把连接时我返回给你的key传给我
+            shapeList:self.shapeList,
+            shape:self.shape,
+            pointArray:self.pointArray
+        }
+        if(self.type!=4)
+        	self.shapeListJson.shape={};
+        self.ws.send(JSON.stringify(self.shapeListJson))
+        self.isClick=false;
 	},
 	drawGraphic:function(){
 	    this.context.clearRect(0,0,this.canvas.width,this.canvas.height);
@@ -78,39 +92,25 @@ freeGraphic.prototype={
 	            "startX": self.startX,
 	            "startY": self.startY,
 	            "endX": self.endX,
-	            "endY": self.endY
+	            "endY": self.endY,
+				"key":self.verifyKey,
+				"lineWidth":self.lineWidth,
+				"color":self.color
 	        }
 	        if(self.shape.type!=4)
-	        	self.pointArray.length=0;
-			self.pointArray.push(self.shape);
+	        	self.pointArray=new Array();
+	        else{
+                self.pointArray.push(self.shape);
+			}
 	        self.shapeListJson={
 	        	key:self.verifyKey, //TODO  ，这里加个key 把连接时我返回给你的key传给我
 	            shapeList:self.shapeList,
 	            shape:self.shape,
 				pointArray:self.pointArray
 	        }
+            drawSaveShape(self.shapeListJson,self);
 	        self.ws.send(JSON.stringify(self.shapeListJson))
 	    }
-	    self.drawGraphicType();
-	    if(self.shapeList[0]!=undefined){
-	        for(var i=0;i<self.shapeList.length;i++){
-	            self.startX=self.shapeList[i].startX;
-	            self.startY=self.shapeList[i].startY;
-	            self.endX=self.shapeList[i].endX;
-	            self.endY=self.shapeList[i].endY;
-	            self.type=self.shapeList[i].type;
-	            self.drawGraphicType();
-	        }
-	    }
-        for(var i=0;i<self.shapeListJson.pointArray.length;i++){
-            var shape=self.shapeListJson.pointArray[i];
-            self.startX=shape.startX;
-            self.startY=shape.startY;
-            self.endX=shape.endX;
-            self.endY=shape.endY;
-            self.type=shape.type;
-            self.drawGraphicType();
-        }
 	    if(self.shape.type!=4){
             self.startX=self.shape.startX;
             self.startY=self.shape.startY;
@@ -120,14 +120,11 @@ freeGraphic.prototype={
 		}
         self.type=self.shape.type;
 	},
-	drawGraphicType:function(){
-	    this.context.strokeStyle="#15dde8";
-	    this.context.fillStyle="#15dde8";
-	    this.context.lineWidth=1;
-	    this.startX=(this.startX-this.rect.left)*(this.canvas.width/this.rect.width);
-	    this.startY=(this.startY-this.rect.top)*(this.canvas.height/this.rect.height);
-	    this.endX=(this.endX-this.rect.left)*(this.canvas.width/this.rect.width);
-	    this.endY=(this.endY-this.rect.top)*(this.canvas.height/this.rect.height);
+	drawGraphicType:function(lineWidth,color){
+		var self=this;
+	    this.context.strokeStyle=color;
+	    this.context.fillStyle=color;
+	    this.context.lineWidth=lineWidth;
 	    switch(this.type){
 	        case 1:
 	            this.drawLine();
@@ -145,6 +142,7 @@ freeGraphic.prototype={
 	},
 	drawLine:function(){
 	    this.context.beginPath();
+	    this.context.lineCap="round";
 	    this.context.moveTo(this.startX,this.startY);
 	    this.context.lineTo(this.endX,this.endY);
 	    this.context.stroke();
@@ -166,4 +164,66 @@ freeGraphic.prototype={
 	    this.context.restore();
 	}
 
+}
+
+//绘制保存的图像信息
+function drawSaveShape(obj,obj2){
+    obj2.isMouseDraw=false;
+    obj2.shapeListJson=obj;
+    obj2.shape=obj.shape;
+    obj2.shapeList=obj.shapeList;
+    obj2.pointArray=obj.pointArray;
+    obj2.context.clearRect(0,0,obj2.canvas.width,obj2.canvas.height);
+    if(obj.shapeList[0]!=undefined&&obj.shapeList.length!=0){
+        for(var i=0;i<obj.shapeList.length;i++){
+            var getInfo=obj.shapeList[i];
+            if(isArray(getInfo)){
+            	for(var j=0;j<obj.shapeList[i].length;j++){
+            		var getInfo2=obj.shapeList[i][j];
+                    attrChange(getInfo2,obj2);
+                    obj2.drawGraphicType(getInfo2.lineWidth,getInfo2.color);
+				}
+			}else{
+                attrChange(getInfo,obj2)
+                obj2.drawGraphicType(getInfo.lineWidth,getInfo.color);
+			}
+        }
+    }
+    if(obj.pointArray[0]!=undefined&&obj.pointArray.length!=0){
+        for(var i=0;i<obj.pointArray.length;i++){
+            var getInfo=obj.pointArray[i];
+            attrChange(getInfo,obj2)
+            obj2.drawGraphicType(getInfo.lineWidth,getInfo.color);
+        }
+    }
+    if(obj.shape.startX!=undefined){
+        attrChange(obj.shape,obj2);
+        obj2.drawGraphicType(obj.shape.lineWidth,obj.shape.color);
+	}
+}
+
+//参数赋值
+function attrChange(obj,obj2){
+    obj2.startX=obj.startX;
+    obj2.startY=obj.startY;
+    obj2.endX=obj.endX;
+    obj2.endY=obj.endY;
+    obj2.type=obj.type;
+    obj2.lineWidth=obj.lineWidth;
+    obj2.color=obj.color;
+}
+
+//判断是否是数组
+function isArray(obj) {
+    return Object.prototype.toString.call(obj) === '[object Array]';
+}
+
+//删除数组对象index位置元素
+function spliceAttr(arr,index){
+	var newArr=new Array();
+	for(var i=0;i<arr.length;i++){
+		if(i!=index)
+			newArr.push(arr[i]);
+	}
+	return newArr;
 }

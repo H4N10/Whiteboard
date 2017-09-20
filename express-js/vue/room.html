@@ -7,9 +7,29 @@
 </head>
 <body>
 <div class="canvasPanel">
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" style="background:#000;cursor:url('../img/b1.cur'),pointer;"></canvas>
     <div class="buttonGroup">
         <div  v-for="(graphic,index) in graphicAttr" :id="graphic.id" class="button" @click="newFreeGraphic(index+1)">{{graphic.name}}</div>
+    </div>
+    <div class="colorPanel">
+        <div class="fontPanel">
+            <ul>
+                <li v-for="(fontSize,index) in font" @click="changeFontSize(fontSize,index)">
+                    <i :style="{width:fontSize+'px',height:fontSize+'px'}"></i>
+                </li>
+            </ul>
+        </div>
+        <div class="colorContainer">
+            <div class="colorCurrent">
+                <i :style="{background:currentColor}"></i>
+            </div>
+            <ul>
+                <li v-for="(color,index) in colors" @click="changeColor(color)">
+                    <i :style="{background: color}"></i>
+                </li>
+            </ul>
+        </div>
+        <div class="eraser" @click="toggleEraser"></div>
     </div>
 </div>
 <script type="text/javascript" src="../js/vue.js"></script>
@@ -23,60 +43,62 @@
     canvas1.height=window.innerHeight;
     var context=canvas1.getContext("2d");
     var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
-//    window.onbeforeunload=function (){
-////                    if(event.clientX>document.body.clientWidth && event.clientY < 0 || event.altKey){
-//        freeGraphic1.ws.close();
-////                    }else{
-////                        alert("你正在刷新页面");
-////                    }
-//    }
     var verifyKey;
     var freeGraphic2;
+    freeGraphic2=new freeGraphic(4,"canvas",ws,1);
     ws.onmessage=function(e){
         if(e.data.split("标识").length==2)
             verifyKey=e.data.split("标识")[1];
-            freeGraphic2=new freeGraphic(1,"canvas",ws,verifyKey);
+            freeGraphic2._init(4,"canvas",ws,verifyKey);
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
                     var getInfoAttr=JSON.parse(ev.data);
-                    freeGraphic2.shapeListJson=getInfoAttr;
-                    freeGraphic2.isMouseDraw=false;
-                    freeGraphic2.shape=getInfoAttr.shape;
-                    freeGraphic2.shapeList=getInfoAttr.shapeList;
-                    freeGraphic2.pointArray=getInfoAttr.pointArray;
-                    freeGraphic2.context.clearRect(0,0,freeGraphic2.canvas.width,freeGraphic2.canvas.height);
-                    if(getInfoAttr.pointArray[0]!=undefined&&getInfoAttr.pointArray.length!=0){
-                        for(var i=0;i<getInfoAttr.pointArray.length;i++){
-                            var getInfo=getInfoAttr.pointArray[i];
-                            freeGraphic2.startX=getInfo.startX;
-                            freeGraphic2.startY=getInfo.startY;
-                            freeGraphic2.endX=getInfo.endX;
-                            freeGraphic2.endY=getInfo.endY;
-                            freeGraphic2.type=getInfo.type;
-                            freeGraphic2.drawGraphicType();
+                    drawSaveShape(getInfoAttr,freeGraphic2);
+                    for(var i=getInfoAttr.shapeList.length-1;i>=0;i--){
+                        try{
+                            if(getInfoAttr.shapeList[i].key==verifyKey||getInfoAttr.shapeList[i][0].key==verifyKey){
+                                    var currentShape=getInfoAttr.shapeList[i].key?getInfoAttr.shapeList[i]:getInfoAttr.shapeList[i][0];
+                                freeGraphic2.type=currentShape.type;
+                                freeGraphic2.color=currentShape.color;
+                                freeGraphic2.lineWidth=currentShape.lineWidth;
+                                break;
+                            }
+                        }
+                        catch(e){
+                            console.log(e);
                         }
                     }
-                    if(getInfoAttr.shapeList[0]!=undefined&&getInfoAttr.shapeList.length!=0){
-                        for(var x=0;x<getInfoAttr.shapeList.length;x++){
-                            var getInfo=getInfoAttr.shapeList[x];
-                            freeGraphic2.startX=getInfo.startX;
-                            freeGraphic2.startY=getInfo.startY;
-                            freeGraphic2.endX=getInfo.endX;
-                            freeGraphic2.endY=getInfo.endY;
-                            freeGraphic2.type=getInfo.type;
-                            freeGraphic2.drawGraphicType();
-                        }
-                    }
-                    freeGraphic2.startX=getInfoAttr.shape.startX;
-                    freeGraphic2.startY=getInfoAttr.shape.startY;
-                    freeGraphic2.endX=getInfoAttr.shape.endX;
-                    freeGraphic2.endY=getInfoAttr.shape.endY;
-                    freeGraphic2.type=getInfoAttr.shape.type;
                 }else{
                     freeGraphic2.verifyKey=ev.data.split("标识")[1];
                 }
             }
     }
+    window.onkeydown=function(e){
+        if(e.keyCode==90&&e.ctrlKey){
+            for(var i=freeGraphic2.shapeList.length-1;i>=0;i--){
+                try{
+                    if(freeGraphic2.shapeList[i].key==verifyKey||freeGraphic2.shapeList[i][0].key==verifyKey){
+                        freeGraphic2.shapeList=spliceAttr(freeGraphic2.shapeList,i);
+                        break;
+                    }
+                }
+                catch(e){
+                    console.log(e)
+                }
+            }
+            freeGraphic2.shapeListJson.shapeList=freeGraphic2.shapeList;
+            freeGraphic2.ws.send(JSON.stringify(freeGraphic2.shapeListJson));
+            drawSaveShape(freeGraphic2.shapeListJson,freeGraphic2);
+        }
+    }
+
+//    var html="";
+//    html+='<div class="colorPanel">';
+//    html+=''
+//    var colorPanelComponent={
+//        template:html
+//    }
+
     var vue=new Vue({
         el:'.canvasPanel',
         data:{
@@ -85,23 +107,67 @@
                 {id:"rectangle",name:"矩形"},
                 {id:"circle",name:"圆形"},
                 {id:"freeLine",name:"自由画线"}
-            ]
+            ],
+            font:[2,4,8,15],
+            colors:["#ffffff","#000000","#c0c0c0","#808080","#fb3838","#800000","#ffff00","#f7883a","#99cc00","#308430","#3894e4","#385ad3","#f31bf3","#800080","#16dcdc","#009999"],
+            currentFontSize:1,
+            currentColor:"#fff",
+            currentType:4,
+            isOpenEraser:false
         },
         methods:{
             newFreeGraphic:function(type){
-                var freeGraphicSave;
-                if(freeGraphic2){
-                    freeGraphicSave=freeGraphic2;
+                if(!this.isOpenEraser){
+                    if(type!=4) {
+                        canvas.style.cursor = "crosshair";
+                    }else{
+                        canvas.style.cursor="url(\"../img/b1.cur\"), pointer";
+                        console.log(canvas.style.cursor)
+                    }
+                    freeGraphic2.verifyKey=verifyKey;
+                    freeGraphic2.type=type;
+                    this.currentType=type;
                 }
-                freeGraphic2=new freeGraphic(type,"canvas",ws,verifyKey);
-                if(freeGraphicSave){
-                    freeGraphic2.shape=freeGraphicSave.shape;
-                    freeGraphic2.shapeList=freeGraphicSave.shapeList;
-                    freeGraphic2.pointArray=freeGraphicSave.pointArray;
-                    freeGraphic2.shapeListJson=freeGraphicSave.shapeListJson;
+            },
+            changeFontSize:function(size,index){
+                this.currentFontSize=size;
+                freeGraphic2.lineWidth=size;
+                if(document.querySelectorAll(".fontPanel>ul>li.active")[0])
+                    document.querySelectorAll(".fontPanel>ul>li.active")[0].className="";
+                    document.querySelectorAll(".fontPanel>ul>li")[index].className="active";
+
+            },
+            changeColor:function(color){
+                if(!this.isOpenEraser){
+                    this.currentColor=color;
+                    freeGraphic2.color=color;
                 }
+            },
+            toggleEraser:function(){
+                var color=document.getElementById("canvas").style.getPropertyValue("background-color");
+                if(document.querySelectorAll(".eraser.active")[0]){
+                    var currentClassName=document.querySelectorAll(".eraser.active")[0].className.split(" ")[0];
+                    document.querySelectorAll(".eraser.active")[0].className=currentClassName;
+                    freeGraphic2.color=this.currentColor;
+                    freeGraphic2.type=this.currentType;
+                    if(this.currentType!=4) {
+                        canvas.style.cursor = "crosshair";
+                    }else{
+                        canvas.style.cursor="url(\"../img/b1.cur\"), pointer";
+                    }
+                }else{
+                    document.querySelectorAll(".eraser")[0].className+=" active";
+                    canvas.style.cursor="url(\"../img/eraser2.png\"), pointer";
+                    freeGraphic2.color=color;
+                    freeGraphic2.type=4;
+                    freeGraphic2.lineWidth=15;
+                }
+                this.isOpenEraser=!this.isOpenEraser;
             }
         }
+//        components:{
+//            'colorPanel':colorPanelComponent
+//        }
     })
 </script>
 </body>
