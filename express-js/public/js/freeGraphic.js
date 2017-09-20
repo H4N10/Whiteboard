@@ -142,6 +142,7 @@ freeGraphic.prototype={
 	},
 	drawLine:function(){
 	    this.context.beginPath();
+	    this.context.lineCap="round";
 	    this.context.moveTo(this.startX,this.startY);
 	    this.context.lineTo(this.endX,this.endY);
 	    this.context.stroke();

@@ -114,7 +114,8 @@ html,body{
     /*margin-left:50px;*/
     margin:0 auto;
     display:block;
-    cursor:url('../img/pan.png'),pointer;
+    /*cursor:url('../img/pan.png'),pointer;*/
+    cursor:crosshair;
     /*cursor:url('../img/pan.png'),-moz-zoom-out;*/
     /*cursor:url('../img/pan.png'),auto;*/
 }
