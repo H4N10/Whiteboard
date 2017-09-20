@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="canvasPanel">
-    <canvas id="canvas" style="background:#000;"></canvas>
+    <canvas id="canvas" style="background:#000;cursor:url('../img/b1.cur'),pointer;"></canvas>
     <div class="buttonGroup">
         <div  v-for="(graphic,index) in graphicAttr" :id="graphic.id" class="button" @click="newFreeGraphic(index+1)">{{graphic.name}}</div>
     </div>
@@ -45,11 +45,11 @@
     var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
     var verifyKey;
     var freeGraphic2;
-    freeGraphic2=new freeGraphic(1,"canvas",ws,1);
+    freeGraphic2=new freeGraphic(4,"canvas",ws,1);
     ws.onmessage=function(e){
         if(e.data.split("标识").length==2)
             verifyKey=e.data.split("标识")[1];
-            freeGraphic2._init(1,"canvas",ws,verifyKey);
+            freeGraphic2._init(4,"canvas",ws,verifyKey);
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
                     var getInfoAttr=JSON.parse(ev.data);
@@ -112,12 +112,18 @@
             colors:["#ffffff","#000000","#c0c0c0","#808080","#fb3838","#800000","#ffff00","#f7883a","#99cc00","#308430","#3894e4","#385ad3","#f31bf3","#800080","#16dcdc","#009999"],
             currentFontSize:1,
             currentColor:"#fff",
-            currentType:1,
+            currentType:4,
             isOpenEraser:false
         },
         methods:{
             newFreeGraphic:function(type){
                 if(!this.isOpenEraser){
+                    if(type!=4) {
+                        canvas.style.cursor = "crosshair";
+                    }else{
+                        canvas.style.cursor="url(\"../img/b1.cur\"), pointer";
+                        console.log(canvas.style.cursor)
+                    }
                     freeGraphic2.verifyKey=verifyKey;
                     freeGraphic2.type=type;
                     this.currentType=type;
@@ -143,11 +149,18 @@
                     var currentClassName=document.querySelectorAll(".eraser.active")[0].className.split(" ")[0];
                     document.querySelectorAll(".eraser.active")[0].className=currentClassName;
                     freeGraphic2.color=this.currentColor;
-                    freeGraphic2.type=this.currentType
+                    freeGraphic2.type=this.currentType;
+                    if(this.currentType!=4) {
+                        canvas.style.cursor = "crosshair";
+                    }else{
+                        canvas.style.cursor="url(\"../img/b1.cur\"), pointer";
+                    }
                 }else{
                     document.querySelectorAll(".eraser")[0].className+=" active";
+                    canvas.style.cursor="url(\"../img/eraser2.png\"), pointer";
                     freeGraphic2.color=color;
                     freeGraphic2.type=4;
+                    freeGraphic2.lineWidth=15;
                 }
                 this.isOpenEraser=!this.isOpenEraser;
             }
