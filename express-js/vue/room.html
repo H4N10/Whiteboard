@@ -7,7 +7,7 @@
 </head>
 <body>
 <div class="canvasPanel">
-    <canvas id="canvas"></canvas>
+    <canvas id="canvas" style="background:#000;"></canvas>
     <div class="buttonGroup">
         <div  v-for="(graphic,index) in graphicAttr" :id="graphic.id" class="button" @click="newFreeGraphic(index+1)">{{graphic.name}}</div>
     </div>
@@ -29,6 +29,7 @@
                 </li>
             </ul>
         </div>
+        <div class="eraser" @click="toggleEraser"></div>
     </div>
 </div>
 <script type="text/javascript" src="../js/vue.js"></script>
@@ -107,30 +108,48 @@
                 {id:"circle",name:"圆形"},
                 {id:"freeLine",name:"自由画线"}
             ],
-            font:[2,4,8],
+            font:[2,4,8,15],
             colors:["#ffffff","#000000","#c0c0c0","#808080","#fb3838","#800000","#ffff00","#f7883a","#99cc00","#308430","#3894e4","#385ad3","#f31bf3","#800080","#16dcdc","#009999"],
             currentFontSize:1,
-            currentColor:"#fff"
+            currentColor:"#fff",
+            currentType:1,
+            isOpenEraser:false
         },
         methods:{
             newFreeGraphic:function(type){
-//                if(!freeGraphic2){
-//                    freeGraphic2._init(type,"canvas",ws,verifyKey);
-//                }
-//                console.log(freeGraphic2)
-                freeGraphic2.verifyKey=verifyKey;
-                freeGraphic2.type=type;
+                if(!this.isOpenEraser){
+                    freeGraphic2.verifyKey=verifyKey;
+                    freeGraphic2.type=type;
+                    this.currentType=type;
+                }
             },
             changeFontSize:function(size,index){
                 this.currentFontSize=size;
                 freeGraphic2.lineWidth=size;
-                if(document.getElementsByClassName("active")[0])
-                    document.getElementsByClassName("active")[0].className="";
+                if(document.querySelectorAll(".fontPanel>ul>li.active")[0])
+                    document.querySelectorAll(".fontPanel>ul>li.active")[0].className="";
                     document.querySelectorAll(".fontPanel>ul>li")[index].className="active";
+
             },
             changeColor:function(color){
-                this.currentColor=color;
-                freeGraphic2.color=color;
+                if(!this.isOpenEraser){
+                    this.currentColor=color;
+                    freeGraphic2.color=color;
+                }
+            },
+            toggleEraser:function(){
+                var color=document.getElementById("canvas").style.getPropertyValue("background-color");
+                if(document.querySelectorAll(".eraser.active")[0]){
+                    var currentClassName=document.querySelectorAll(".eraser.active")[0].className.split(" ")[0];
+                    document.querySelectorAll(".eraser.active")[0].className=currentClassName;
+                    freeGraphic2.color=this.currentColor;
+                    freeGraphic2.type=this.currentType
+                }else{
+                    document.querySelectorAll(".eraser")[0].className+=" active";
+                    freeGraphic2.color=color;
+                    freeGraphic2.type=4;
+                }
+                this.isOpenEraser=!this.isOpenEraser;
             }
         }
 //        components:{

@@ -109,11 +109,14 @@ html,body{
 }
 #canvas{
     position: relative;
-    background:#000;
+    /*background:#000;*/
     /*margin-top:50px;*/
     /*margin-left:50px;*/
     margin:0 auto;
     display:block;
+    cursor:url('../img/pan.png'),pointer;
+    /*cursor:url('../img/pan.png'),-moz-zoom-out;*/
+    /*cursor:url('../img/pan.png'),auto;*/
 }
 .buttonGroup{
     position: absolute;
@@ -124,6 +127,7 @@ html,body{
 }
 .buttonGroup div{
     margin-right:20px;
+    cursor:pointer;
 }
 .colorPanel{
     position:fixed;
@@ -135,7 +139,7 @@ html,body{
     box-sizing:border-box;
     padding:0 2px;
     padding-bottom: 5px;
-
+    cursor:pointer;
 }
 .fontPanel{
     position: relative;
@@ -225,4 +229,23 @@ html,body{
     border:1px solid #9d9fa0;
     text-align: center;
     box-sizing:border-box;
+}
+.eraser{
+    position: relative;
+    margin-top:2px;
+    width:24px;
+    height:24px;
+    margin-left:5px;
+    background-color: #eaeef5;
+    background-image: url('../img/eraser.png');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size:24px 24px;
+    border:1px solid #9d9fa0;
+}
+.eraser:hover{
+    background-color:#d6d9e1;
+}
+.eraser.active{
+    background-color:#d6d9e1;
 }
