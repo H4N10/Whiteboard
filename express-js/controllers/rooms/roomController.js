@@ -14,7 +14,7 @@ var shapes = new Array();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
 
 //创建webSocket服务器
-function createServer(port) {
+function createServer(port,req) {
     var WebSocketServer = ws.Server;
     var server = new WebSocketServer({
         port: port,//监听的端口
@@ -50,6 +50,7 @@ function createServer(port) {
                     cons[i] = null;
                  }
              }
+            req.session.login = false;
             console.log("退出连接"+code+":"+reason);
         })
     });
@@ -84,7 +85,9 @@ exports.controller = function (app) {
             name:'房间'+id,
             key:id+6000
     });
-        createServer(id+6000);//创建长连接
+        createServer(id+6000,req);//创建长连接
+        req.session.login = true;
+
         res.send(response.JsonResult({
             data:room
         }));
@@ -100,11 +103,10 @@ exports.controller = function (app) {
     app.post('/rooms/comeIn',urlencodedParser ,function (req,res) {
         console.log(req.body.params.key);
         var jsonResult ;
+        req.session.login = true;
+
         if(req.body.params.key){
-            req.session.roomkey= req.body.params.key;
-             jsonResult = response.JsonResult({
-                 data:null
-            })
+
         }else{
             jsonResult = response.JsonResult({
                 code:201,
@@ -113,6 +115,5 @@ exports.controller = function (app) {
             })
         }
         res.send(jsonResult);
-
     })
 }
