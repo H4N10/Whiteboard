@@ -77,6 +77,9 @@
         if(e.keyCode==90&&e.ctrlKey){
             for(var i=freeGraphic2.shapeList.length-1;i>=0;i--){
                 try{
+                    if(freeGraphic2.shape.startX!=undefined){
+                        freeGraphic2.shape=new Object();
+                    }
                     if(freeGraphic2.shapeList[i].key==verifyKey||freeGraphic2.shapeList[i][0].key==verifyKey){
                         freeGraphic2.shapeList=spliceAttr(freeGraphic2.shapeList,i);
                         break;
@@ -86,6 +89,7 @@
                     console.log(e)
                 }
             }
+            freeGraphic2.shapeListJson.shape=freeGraphic2.shape;
             freeGraphic2.shapeListJson.shapeList=freeGraphic2.shapeList;
             freeGraphic2.ws.send(JSON.stringify(freeGraphic2.shapeListJson));
             drawSaveShape(freeGraphic2.shapeListJson,freeGraphic2);
