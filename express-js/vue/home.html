@@ -75,11 +75,13 @@
 				    window.sessionStorage.setItem("key",key);
                     console.log(window.sessionStorage.getItem("key"));
 				    window.location.href="../view/room";
-				    this.$http.post('../rooms/comeIn',{params: {key: key}}).then(res=>{
-
-					},res=>{
-				        console.log(response);
-					})
+//				    this.$http.post('../rooms/comeIn',{params: {key: key}}).then(res=>{
+//                        document.write(res);
+//                    console.log("测试1："+res);
+//
+//                },res=>{
+//				        console.log("测试："+response);
+//					})
 				}
 		    }
 		});

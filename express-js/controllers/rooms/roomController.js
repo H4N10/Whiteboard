@@ -50,7 +50,7 @@ function createServer(port,req) {
                     cons[i] = null;
                  }
              }
-            req.session.login = false;
+            req.session.roomKey = "";
             console.log("退出连接"+code+":"+reason);
         })
     });
@@ -86,7 +86,7 @@ exports.controller = function (app) {
             key:id+6000
     });
         createServer(id+6000,req);//创建长连接
-        req.session.login = true;
+        req.session.roomKey = id+6000;
 
         res.send(response.JsonResult({
             data:room
@@ -101,12 +101,13 @@ exports.controller = function (app) {
     });
     //进入房间
     app.post('/rooms/comeIn',urlencodedParser ,function (req,res) {
-        console.log(req.body.params.key);
+        console.log("钥匙钥匙："+req.body.params.key);
         var jsonResult ;
-        req.session.login = true;
 
         if(req.body.params.key){
-
+            // res.sendfile('vue/'+req.params.view+'.html');
+            res.redirect('/');
+            res.end();
         }else{
             jsonResult = response.JsonResult({
                 code:201,
