@@ -42,7 +42,11 @@
     canvas1.width=window.innerWidth;
     canvas1.height=window.innerHeight;
     var context=canvas1.getContext("2d");
-    var ws = new WebSocket("ws://localhost:"+window.sessionStorage.getItem("key"));
+    console.log(window.sessionStorage.getItem("key"))
+    var roomKey=window.sessionStorage.getItem("key");
+    if(roomKey==null)
+        window.location.href="home";
+    var ws = new WebSocket("ws://localhost:"+roomKey);
     var verifyKey;
     var freeGraphic2;
     freeGraphic2=new freeGraphic(4,"canvas",ws,1);
