@@ -7,7 +7,7 @@ var bodyParser = require('body-parser');
 
 var util = require('util');
 var response = require(process.cwd()+'/models/result');
-
+var db = require(process.cwd()+('/db.js'));
 var id = 0;
 var cons = new Array();
 var shapes = new Array();
@@ -25,14 +25,30 @@ function createServer(port,req) {
         mSocket.socket = socket;
         mSocket.port = port;
         cons.push(mSocket);
+        var data = [{_id:port,"name":'房间'+port,"shape":""}];
+        db.insertData("rooms",data,function (result) {
+            console.log(result);
+
+        });
         console.log("用户连接："+cons.length);
         // console.dir(socket);
         socket.send("标识"+ cons.length);
-        if(shapes[port])
-            socket.send(shapes[port]); //转发房间内已有图像
+        var  where={_id:{"$eq":port}};
+        var findSet = {shape:1,_id:0};
+        var mShape = db.findData("rooms",where,findSet,function (res) {
+            socket.send(res[0].shape);
+        });
+
+        //转发房间内已有图像
         console.log("标识"+ cons.length);
         socket.on('message', function (message) {
             var msg=JSON.parse(message);
+            //存储图像进数据库
+            var  where={_id:{"$eq":port}};
+            var set={$set:{shape:message}};
+            db.updateData("rooms",where,set,function (result) {
+                console.log("存储图像结果："+result);
+            })
             shapes[port] = message;
             for (var i = 0; i < cons.length; i++) {
                 if(cons[i]){
@@ -50,22 +66,11 @@ function createServer(port,req) {
                     cons[i] = null;
                  }
              }
-            req.session.roomKey = "";
             console.log("退出连接"+code+":"+reason);
         })
     });
 }
-// Array.prototype.remove = function (dx) {
-//     if (isNaN(dx) || dx > this.length) {
-//         return false;
-//     }
-//     for (var i = 0, n = 0; i < this.length; i++) {
-//         if (this[i] != this[dx]) {
-//             this[n++] = this[i];
-//         }
-//     }
-//     this.length -= 1;
-// };
+
 
 exports.controller = function (app) {
     //获取房间属性
@@ -86,8 +91,6 @@ exports.controller = function (app) {
             key:id+6000
     });
         createServer(id+6000,req);//创建长连接
-        req.session.roomKey = id+6000;
-
         res.send(response.JsonResult({
             data:room
         }));

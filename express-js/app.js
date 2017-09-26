@@ -9,11 +9,24 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var index = require('./routes/index');
 var users = require('./routes/users');
-
+var session = require('express-session');
+var FileStore = require('session-file-store')(session);
+var db = require('./db');
 var app = express();
 //静态资源不拦截
 app.use(express.static('public'));
+var identityKey = 'roomkey';
 
+app.use(session({
+    name: identityKey,
+    secret: 'chyingp',  // 用来对session id相关的cookie进行签名
+    store: new FileStore(),  // 本地存储session（文本文件，也可以选择其他store，比如redis的）
+    saveUninitialized: true,  // 是否自动保存未初始化的会话，建议false
+    resave: true,  // 是否每次都重新保存会话，建议false
+    cookie: {
+        maxAge: 100 * 1000  // 有效期，单位是毫秒
+    }
+}));
 // 读取controllers文件夹下所有js文件
 function readFile(path) {
     fs.readdirSync(path).forEach(function (file) {

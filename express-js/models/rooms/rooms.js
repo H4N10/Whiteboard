@@ -1,6 +1,7 @@
 //房间实体类
 var roomArray = new Array();
 
+
 function Rooms(props) {
     this.id = props.id;
     this.name = props.name;
