@@ -12,7 +12,6 @@ var id = 0;
 var cons = new Array();
 var shapes = new Array();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
-
 //创建webSocket服务器
 function createServer(port,req) {
     var WebSocketServer = ws.Server;
@@ -25,26 +24,24 @@ function createServer(port,req) {
         mSocket.socket = socket;
         mSocket.port = port;
         cons.push(mSocket);
-        var data = [{_id:port,"name":'房间'+port,"shape":""}];
-        db.insertData("rooms",data,function (result) {
-            console.log(result);
-
-        });
         console.log("用户连接："+cons.length);
         // console.dir(socket);
         socket.send("标识"+ cons.length);
-        var  where={_id:{"$eq":port}};
-        var findSet = {shape:1,_id:0};
-        var mShape = db.findData("rooms",where,findSet,function (res) {
-            socket.send(res[0].shape);
-        });
 
+        var  where={key:{"$eq":port}};
+        var findSet = {shape:1,question:1,_id:0};
+        var mShape = db.findData("rooms",where,findSet,function (res) {
+            console.dir(res[0])
+            if(res && res.length>0)
+                socket.send(res[0].shape);
+        });
+        rooms.addOrRemoveNum(port,true);
         //转发房间内已有图像
         console.log("标识"+ cons.length);
         socket.on('message', function (message) {
             var msg=JSON.parse(message);
             //存储图像进数据库
-            var  where={_id:{"$eq":port}};
+            var  where={key:{"$eq":port}};
             var set={$set:{shape:message}};
             db.updateData("rooms",where,set,function (result) {
                 console.log("存储图像结果："+result);
@@ -66,6 +63,7 @@ function createServer(port,req) {
                     cons[i] = null;
                  }
              }
+            rooms.addOrRemoveNum(port,false);
             console.log("退出连接"+code+":"+reason);
         })
     });
@@ -74,21 +72,24 @@ function createServer(port,req) {
 
 exports.controller = function (app) {
     //获取房间属性
-    app.use(session({
-        secret: 'roomSession',
-        cookie: {maxAge: 80000 },  //设置maxAge是80000ms，即80s后session和相应的cookie失效过期
-        resave: true,
-        saveUninitialized:true
-    }));
+    // app.use(session({
+    //     secret: 'roomSession',
+    //     cookie: {maxAge: 80000 },  //设置maxAge是80000ms，即80s后session和相应的cookie失效过期
+    //     resave: true,
+    //     saveUninitialized:true
+    // }));
     app.use(bodyParser.json()); // for parsing application/json
     app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
     // app.use(multer()); // for parsing multipart/form-data
 
     app.get('/rooms/getRoom', function (req, res) {
         var room = rooms.createRooms({
-            id:''+id++,
+            id: id++,
             name:'房间'+id,
-            key:id+6000
+            key:id+6000,
+            num:0,
+            shape:""
+
     });
         createServer(id+6000,req);//创建长连接
         res.send(response.JsonResult({
@@ -120,4 +121,5 @@ exports.controller = function (app) {
         }
         res.send(jsonResult);
     })
+
 }

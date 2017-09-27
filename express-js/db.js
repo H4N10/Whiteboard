@@ -19,7 +19,9 @@ MongoClient.connect(DB_CONN_STR, function(err, db) {
     //     db.close();
     // });
 });
-
+exports.getDatabase = function () {
+    return mdatabase;
+}
 //定义函数表达式，用于操作数据库并返回结果
 exports.insertData = function(key,value, callback) {
     if(!mdatabase)
@@ -47,7 +49,17 @@ exports.updateData = function(key,where,set, callback) {
     // var  where={age:{"$gte":10}};
     //要修改的结果
     // var set={$set:{age:95}};
-    collection.update(where,set,true,true, function(err, result) {
+    // collection.update(where,set,true,true, function(err, result) {
+    //     //如果存在错误
+    //     if(err)
+    //     {
+    //         console.log('Error:'+ err);
+    //         return;
+    //     }
+    //     //调用传入的回调方法，将操作结果返回
+    //     callback(result);
+    // });
+    collection.updateMany(where,set, function(err, result) {
         //如果存在错误
         if(err)
         {
