@@ -31,9 +31,8 @@ function createServer(port,req) {
         var  where={key:{"$eq":port}};
         var findSet = {shape:1,question:1,_id:0};
         var mShape = db.findData("rooms",where,findSet,function (res) {
-            console.dir(res[0])
             if(res && res.length>0)
-                socket.send(res[0].shape);
+                socket.send(res);
         });
         rooms.addOrRemoveNum(port,true);
         //转发房间内已有图像
@@ -98,10 +97,12 @@ exports.controller = function (app) {
     });
     //获取所有房间
     app.get('/rooms/getRooms',function (req,res) {
-        var jsonResult = response.JsonResult({
-            data:rooms.getRooms()
+        rooms.getRooms(function (result) {
+            var jsonResult = response.JsonResult({
+                data:result
+            })
+            res.send(jsonResult);
         })
-        res.send(jsonResult);
     });
     //进入房间
     app.post('/rooms/comeIn',urlencodedParser ,function (req,res) {
@@ -121,5 +122,14 @@ exports.controller = function (app) {
         }
         res.send(jsonResult);
     })
-
+    app.post('/rooms/answer',function (req,res) {
+        var jsonResult = response.JsonResult();
+        res.send(jsonResult);
+        if(req.body.params.key){
+            rooms.updateQuestion(req.body.params.key,function (res) {
+                jsonResult.data = res;
+            })
+        }
+        res.send(jsonResult);
+    })
 }

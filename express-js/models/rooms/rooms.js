@@ -10,13 +10,18 @@ function Rooms(props) {
     this.key = props.key;
     this.num = props.num; //房间人数
     this.shape = props.shape;
-    this.question = question[5];
+    this.question = question[getQuestion()];
 }
 Rooms.prototype.test = function () {
     console.log(this);
 };
 
+//生成问题随机数
+function getQuestion(){
+    return parseInt(Math.random()*question.length,10);
+}
 //创建房间
+
 exports.createRooms = function(props) {
     room = new Rooms(props ||{});
     roomArray.push(room);
@@ -26,7 +31,6 @@ exports.createRooms = function(props) {
          if(res && res.length >0){
 
          }else{
-             console.dir(room)
              db.insertData("rooms",room,function (result) {
                  // console.log(result);
              });
@@ -34,13 +38,18 @@ exports.createRooms = function(props) {
     });
     return room;
 }
+//获取所有房间
+exports.getRooms = function (callback) {
+    db.findAllData("rooms",function (res) {
+        callback(res);
+    })
+}
 // 房间人数加一/减一
 exports.addOrRemoveNum = function(port,isAdd){
     var  where={key:{"$eq":port}};
     var findSet = {num:1};
     var number ;
     db.findData("rooms",where,findSet,function (res) {
-        console.dir(res[0])
         if(res && res.length>0){
             if(isAdd){
                 number = parseInt(res[0].num)+1;
@@ -60,13 +69,21 @@ exports.addOrRemoveNum = function(port,isAdd){
         }
 
     })
-
+}
+//更换题目
+exports.updateQuestion = function (port,callback) {
+    var  where={key:{"$eq":port}};
+    var mQuestion = question[getQuestion()];
+    var set={$set:{question:mQuestion}};
+    db.updateData("rooms",where,set,function (res) {
+       callback(mQuestion);
+    });
 
 }
 //获取所有房间
-exports.getRooms = function () {
-     return roomArray;
-}
+// exports.getRooms = function () {
+//      return roomArray;
+// }
 
 
 
