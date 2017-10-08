@@ -97,4 +97,20 @@ exports.removeData = function(key,where, callback) {
         //调用传入的回调方法，将操作结果返回
         callback(result);
     });
-}
+};
+//查詢ID最大值
+exports.findMaxId = function (key,callback) {
+    var collection = mdatabase.collection(key);
+    collection.find().sort({"_id":-1}).limit(1).toArray(function(err, items) {
+        if(err)
+        {
+            console.log('Error:'+ err);
+            return;
+        }
+        //调用传入的回调方法，将操作结果返回
+        if(items[0])
+            callback(items[0]._id);
+        else
+            callback();
+    });
+};

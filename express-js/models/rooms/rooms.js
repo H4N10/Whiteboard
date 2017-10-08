@@ -1,6 +1,5 @@
 //房间实体类
-var roomArray = new Array();
-var db = require(process.cwd()+('/db.js'));
+ var db = require(process.cwd()+('/db.js'));
 var mDatabase = db.getDatabase();
 var text = "牛肉面,冰淇淋,红领巾,淘宝,苹果,耳机,雨伞,炸弹,自行车";
 var question = text.split(",");
@@ -21,22 +20,37 @@ function getQuestion(){
     return parseInt(Math.random()*question.length,10);
 }
 //创建房间
+exports.createRooms = function(callback) {
+    db.findMaxId("rooms",function (id) {
+        var mId;
+        if(id){
+            console.log("ID:"+id)
+            mId = id+1;
+        }else{
+            mId = 1;
+        }
+        room = new Rooms({
+            id: mId,
+            name:'房间'+mId,
+            key:mId+6000,
+            num:0,
+            shape:""
+        });
+        var  where={key:{"$eq":room.id}};
+        var findSet = {};
+        db.findData("rooms",where,findSet,function (res) {
+            if(res && res.length >0){
 
-exports.createRooms = function(props) {
-    room = new Rooms(props ||{});
-    roomArray.push(room);
-    var  where={key:{"$eq":props.key}};
-    var findSet = {};
-    db.findData("rooms",where,findSet,function (res) {
-         if(res && res.length >0){
-
-         }else{
-             db.insertData("rooms",room,function (result) {
-                 // console.log(result);
-             });
-         }
+            }else{
+                db.insertData("rooms",room,function (result) {
+                    // console.log(result);
+                });
+            }
+        });
+        callback(room);
     });
-    return room;
+
+
 }
 //获取所有房间
 exports.getRooms = function (callback) {
@@ -80,10 +94,7 @@ exports.updateQuestion = function (port,callback) {
     });
 
 }
-//获取所有房间
-// exports.getRooms = function () {
-//      return roomArray;
-// }
+
 
 
 

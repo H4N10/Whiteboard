@@ -8,7 +8,6 @@ var bodyParser = require('body-parser');
 var util = require('util');
 var response = require(process.cwd()+'/models/result');
 var db = require(process.cwd()+('/db.js'));
-var id = 0;
 var cons = new Array();
 var shapes = new Array();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
@@ -82,18 +81,12 @@ exports.controller = function (app) {
     // app.use(multer()); // for parsing multipart/form-data
 
     app.get('/rooms/getRoom', function (req, res) {
-        var room = rooms.createRooms({
-            id: id++,
-            name:'房间'+id,
-            key:id+6000,
-            num:0,
-            shape:""
-
-    });
-        createServer(id+6000,req);//创建长连接
-        res.send(response.JsonResult({
-            data:room
-        }));
+         rooms.createRooms(function (room) {
+             createServer(room.key,req);//创建长连接
+             res.send(response.JsonResult({
+                 data:room
+             }));
+        });
     });
     //获取所有房间
     app.get('/rooms/getRooms',function (req,res) {
