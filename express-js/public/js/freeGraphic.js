@@ -174,7 +174,7 @@ function drawSaveShape(obj,obj2){
     obj2.shapeList=obj.shapeList;
     obj2.pointArray=obj.pointArray;
     obj2.context.clearRect(0,0,obj2.canvas.width,obj2.canvas.height);
-    if(obj.shapeList[0]!=undefined&&obj.shapeList.length!=0){
+    if(obj.shapeList!=undefined&&obj.shapeList[0]!=undefined&&obj.shapeList.length!=0){
         for(var i=0;i<obj.shapeList.length;i++){
             var getInfo=obj.shapeList[i];
             if(isArray(getInfo)){
@@ -189,7 +189,7 @@ function drawSaveShape(obj,obj2){
 			}
         }
     }
-    if(obj.pointArray[0]!=undefined&&obj.pointArray.length!=0){
+    if(obj.pointArray!=undefined&&obj.pointArray[0]!=undefined&&obj.pointArray.length!=0){
         for(var i=0;i<obj.pointArray.length;i++){
             var getInfo=obj.pointArray[i];
             attrChange(getInfo,obj2)

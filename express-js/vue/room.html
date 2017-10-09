@@ -51,31 +51,39 @@
     var freeGraphic2;
     freeGraphic2=new freeGraphic(4,"canvas",ws,1);
     ws.onmessage=function(e){
-        if(e.data.split("标识").length==2)
+        if(e.data.split("标识").length==2){
             verifyKey=e.data.split("标识")[1];
             freeGraphic2._init(4,"canvas",ws,verifyKey);
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
-                    var getInfoAttr=JSON.parse(ev.data);
-                    drawSaveShape(getInfoAttr,freeGraphic2);
-                    for(var i=getInfoAttr.shapeList.length-1;i>=0;i--){
-                        try{
-                            if(getInfoAttr.shapeList[i].key==verifyKey||getInfoAttr.shapeList[i][0].key==verifyKey){
+                    var getInfoObject=JSON.parse(ev.data);
+                    if(getInfoObject.shape!=""){
+                        var getInfoAttr;
+                        if(typeof getInfoObject.shape!="string")
+                            getInfoAttr=getInfoObject;
+                        else
+                            getInfoAttr=JSON.parse(getInfoObject.shape);
+                        drawSaveShape(getInfoAttr,freeGraphic2);
+                        for(var i=getInfoAttr.shapeList.length-1;i>=0;i--){
+                            try{
+                                if(getInfoAttr.shapeList[i].key==verifyKey||getInfoAttr.shapeList[i][0].key==verifyKey){
                                     var currentShape=getInfoAttr.shapeList[i].key?getInfoAttr.shapeList[i]:getInfoAttr.shapeList[i][0];
-                                freeGraphic2.type=currentShape.type;
-                                freeGraphic2.color=currentShape.color;
-                                freeGraphic2.lineWidth=currentShape.lineWidth;
-                                break;
+                                    freeGraphic2.type=currentShape.type;
+                                    freeGraphic2.color=currentShape.color;
+                                    freeGraphic2.lineWidth=currentShape.lineWidth;
+                                    break;
+                                }
                             }
-                        }
-                        catch(e){
-                            console.log(e);
+                            catch(e){
+                                console.log(e);
+                            }
                         }
                     }
                 }else{
                     freeGraphic2.verifyKey=ev.data.split("标识")[1];
                 }
             }
+        }
     }
     window.onkeydown=function(e){
         if(e.keyCode==90&&e.ctrlKey){
