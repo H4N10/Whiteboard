@@ -9,17 +9,11 @@ console.log("DB加载中...");
 MongoClient.connect(DB_CONN_STR, function(err, db) {
     console.log("数据库连接成功！");
     mdatabase = db;
-    var data = [{_id:17,"name":'rose2',"age":21},{_id:18,"name":'mark2',"age":22}];
 
-    //执行插入数据操作，调用自定义方法
-    // insertData("users",data, function(result) {
-    //     //显示结果
-    //     console.log(result);
-    //     //关闭数据库
-    //     db.close();
-    // });
 });
-
+exports.getDatabase = function () {
+    return mdatabase;
+}
 //定义函数表达式，用于操作数据库并返回结果
 exports.insertData = function(key,value, callback) {
     if(!mdatabase)
@@ -43,11 +37,8 @@ exports.insertData = function(key,value, callback) {
 exports.updateData = function(key,where,set, callback) {
     //获得指定的集合
     var collection = mdatabase.collection(key);
-    //要修改数据的条件，>=10岁的用户
-    // var  where={age:{"$gte":10}};
-    //要修改的结果
-    // var set={$set:{age:95}};
-    collection.update(where,set,true,true, function(err, result) {
+
+    collection.updateMany(where,set, function(err, result) {
         //如果存在错误
         if(err)
         {
@@ -78,7 +69,18 @@ exports.findData = function(key,where,set, callback) {
         callback(result);
     });
 }
-
+exports.findAllData = function (key,callback) {
+    var collection = mdatabase.collection("rooms");
+    collection.find().toArray(function(err, items) {
+        if(err)
+        {
+            console.log('Error:'+ err);
+            return;
+        }
+        //调用传入的回调方法，将操作结果返回
+        callback(items);
+    });
+}
 //定义函数表达式，用于操作数据库并返回结果
 exports.removeData = function(key,where, callback) {
     //获得指定的集合
@@ -95,4 +97,20 @@ exports.removeData = function(key,where, callback) {
         //调用传入的回调方法，将操作结果返回
         callback(result);
     });
-}
+};
+//查詢ID最大值
+exports.findMaxId = function (key,callback) {
+    var collection = mdatabase.collection(key);
+    collection.find().sort({"_id":-1}).limit(1).toArray(function(err, items) {
+        if(err)
+        {
+            console.log('Error:'+ err);
+            return;
+        }
+        //调用传入的回调方法，将操作结果返回
+        if(items[0])
+            callback(items[0]._id);
+        else
+            callback();
+    });
+};

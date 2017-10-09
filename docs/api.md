@@ -30,7 +30,8 @@
 |id | string |房间ID|
 |name | string | 房间名称 |
 |key | string |房间钥匙 |
-
+|num | int |房间人数 |
+|shape | string |房间图像信息 |
 ## 1.2 获取所有房间信息
 
 *  地址：/rooms/getRooms
@@ -57,6 +58,9 @@
 |id | string |房间ID|
 |name | string | 房间名称 |
 |key | string |房间钥匙 |
+|num | int |房间人数 |
+|shape | string |房间图像信息 |
+|question | string |房间题目 |
 ## 1.3 进入房间
 
 *  地址：/rooms/comeIn
@@ -77,9 +81,33 @@
 
 |返回字段|字段类型|说明 |
 |:----- |:------|:----------------------------- |
-| |  ||
 
-> 请求后会跳转到room.html,并在session中存入｛roomkey,key｝键值对用作后续操作
+
+## 1.4 替换题目
+
+*  地址：/rooms/answer
+
+---
+#### HTTP请求方式
+
+> POST
+
+#### 请求参数
+
+|参数|必选|类型|说明|
+|:----- |:-------|:-----|----- |
+| key |  Y|string | 房间钥匙 |
+|  |  |  |  |
+
+#### 返回字段
+
+|返回字段|字段类型|说明 |
+|:----- |:------|:----------------------------- |
+|code | string |请求返回码，200成功|
+|msg | string |请求结果信息|
+|data | String |题目|
+
+ 
 
 
 
