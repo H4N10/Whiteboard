@@ -30,8 +30,10 @@ function createServer(port,req) {
         var  where={key:{"$eq":port}};
         var findSet = {shape:1,question:1,_id:0};
         var mShape = db.findData("rooms",where,findSet,function (res) {
+            console.dir(JSON.stringify(res[0]) );
+
             if(res && res.length>0)
-                socket.send(res);
+                socket.send(JSON.stringify(res[0]));
         });
         rooms.addOrRemoveNum(port,true);
         //转发房间内已有图像
