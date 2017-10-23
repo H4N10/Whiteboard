@@ -59,7 +59,7 @@ exports.getRooms = function (callback) {
     })
 }
 // 房间人数加一/减一
-exports.addOrRemoveNum = function(port,isAdd){
+exports.addOrRemoveNum = function(port,isAdd,mSocket){
     var  where={key:{"$eq":port}};
     var findSet = {num:1};
     var number ;
@@ -76,6 +76,7 @@ exports.addOrRemoveNum = function(port,isAdd){
                 if(number == 0){
                     db.removeData("rooms",where,function (res) {
                         console.log("删除房间："+res);
+                        mSocket.close();
                     })
                 }
             })

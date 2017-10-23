@@ -43,6 +43,7 @@ function createServer(port,req) {
             //存储图像进数据库
             var  where={key:{"$eq":port}};
             var set={$set:{shape:message}};
+            console.dir(msg)
             db.updateData("rooms",where,set,function (result) {
                 console.log("存储图像结果："+result);
             })
@@ -63,7 +64,7 @@ function createServer(port,req) {
                     cons[i] = null;
                  }
              }
-            rooms.addOrRemoveNum(port,false);
+            rooms.addOrRemoveNum(port,false,server);
             console.log("退出连接"+code+":"+reason);
         })
     });
