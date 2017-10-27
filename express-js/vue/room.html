@@ -127,7 +127,13 @@
         },
         methods:{
             newFreeGraphic:function(type){
-                if(!this.isOpenEraser){
+                if(this.isOpenEraser) {
+                    var currentClassName = document.querySelectorAll(".eraser.active")[0].className.split(" ")[0];
+                    document.querySelectorAll(".eraser.active")[0].className = currentClassName;
+                    freeGraphic2.color = this.currentColor;
+                    freeGraphic2.type = this.currentType;
+                    this.isOpenEraser = false;
+                }
                     if(type!=4) {
                         canvas.style.cursor = "crosshair";
                     }else{
@@ -136,7 +142,7 @@
                     freeGraphic2.verifyKey=verifyKey;
                     freeGraphic2.type=type;
                     this.currentType=type;
-                }
+//                }
             },
             changeFontSize:function(size,index){
                 this.currentFontSize=size;
