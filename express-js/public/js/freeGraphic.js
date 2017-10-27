@@ -41,10 +41,19 @@ freeGraphic.prototype={
 	},
 	mouseDown:function(e){
 		var self=this;
-
-        this.color=document.getElementById("fontColor").value;
-        this.lineWidth=document.getElementById("fontSize").value;
-        this.type=parseInt(document.getElementById("fontType").value);
+        if(document.querySelectorAll(".eraser.active")[0]) {
+            this.color =document.getElementById("canvas").style.getPropertyValue("background-color");
+            this.type = 4;
+            if(document.querySelectorAll(".fontPanel>ul>li.active")[0]){
+                this.lineWidth = document.getElementById("fontSize").value;
+			}else{
+            	this.lineWidth=15;
+			}
+        }else{
+            this.color = document.getElementById("fontColor").value;
+            this.type = parseInt(document.getElementById("fontType").value);
+            this.lineWidth = document.getElementById("fontSize").value;
+		}
 	    if(1 == e.which){
 	        this.isClick=true;
 	        this.startX=e.clientX;

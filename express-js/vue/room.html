@@ -69,9 +69,6 @@
                         drawSaveShape(getInfoAttr,freeGraphic2);
                         for(var i=getInfoAttr.shapeList.length-1;i>=0;i--){
                             var currentShape=isArray(getInfoAttr.shapeList[i])?getInfoAttr.shapeList[i][0]:getInfoAttr.shapeList[i];
-                            console.log(currentShape.key==verifyKey)
-//                            console.log(currentShape.key)
-//                            console.log(verifyKey)
                             if(currentShape.key==verifyKey){
                                 console.log(currentShape)
                                 freeGraphic2.type=currentShape.type;
