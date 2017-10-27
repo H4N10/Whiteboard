@@ -28,7 +28,7 @@ freeGraphic.prototype={
 		var self=this;
         self.canvas.onmousedown=function(e){
             self.isMouseDraw=true;
-            self.mouseDown(e)
+            self.mouseDown(e);
         }
         self.canvas.onmousemove=function(e){
             self.isMouseDraw=true;
@@ -42,6 +42,9 @@ freeGraphic.prototype={
 	mouseDown:function(e){
 		var self=this;
 
+        this.color=document.getElementById("fontColor").value;
+        this.lineWidth=document.getElementById("fontSize").value;
+        this.type=parseInt(document.getElementById("fontType").value);
 	    if(1 == e.which){
 	        this.isClick=true;
 	        this.startX=e.clientX;
@@ -73,7 +76,7 @@ freeGraphic.prototype={
             self.pointArray=new Array();
 		}
         self.shapeListJson={
-            key:self.verifyKey, //TODO  ，这里加个key 把连接时我返回给你的key传给我
+            key:verifyKey, //TODO  ，这里加个key 把连接时我返回给你的key传给我
             shapeList:self.shapeList,
             shape:self.shape,
             pointArray:self.pointArray

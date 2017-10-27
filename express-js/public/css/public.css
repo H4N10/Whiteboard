@@ -250,3 +250,6 @@ html,body{
 .eraser.active{
     background-color:#d6d9e1;
 }
+.colorPanel input{
+    display:none;
+}

@@ -30,6 +30,9 @@
             </ul>
         </div>
         <div class="eraser" @click="toggleEraser"></div>
+        <input type="text" id="fontColor" v-model="currentColor">
+        <input type="text" id="fontSize" v-model="currentFontSize">
+        <input type="text" id="fontType" v-model="currentType">
     </div>
 </div>
 <script type="text/javascript" src="../js/vue.js"></script>
@@ -42,7 +45,6 @@
     canvas1.width=window.innerWidth;
     canvas1.height=window.innerHeight;
     var context=canvas1.getContext("2d");
-    console.log(window.sessionStorage.getItem("key"))
     var roomKey=window.sessionStorage.getItem("key");
     if(roomKey==null)
         window.location.href="home";
@@ -59,23 +61,23 @@
                     var getInfoObject=JSON.parse(ev.data);
                     if(getInfoObject.shape!=""){
                         var getInfoAttr;
-                        if(typeof getInfoObject.shape!="string")
+                        if(typeof getInfoObject.shape!="string"){
                             getInfoAttr=getInfoObject;
+                        }
                         else
                             getInfoAttr=JSON.parse(getInfoObject.shape);
                         drawSaveShape(getInfoAttr,freeGraphic2);
                         for(var i=getInfoAttr.shapeList.length-1;i>=0;i--){
-                            try{
-                                if(getInfoAttr.shapeList[i].key==verifyKey||getInfoAttr.shapeList[i][0].key==verifyKey){
-                                    var currentShape=getInfoAttr.shapeList[i].key?getInfoAttr.shapeList[i]:getInfoAttr.shapeList[i][0];
-                                    freeGraphic2.type=currentShape.type;
-                                    freeGraphic2.color=currentShape.color;
-                                    freeGraphic2.lineWidth=currentShape.lineWidth;
-                                    break;
-                                }
-                            }
-                            catch(e){
-                                console.log(e);
+                            var currentShape=isArray(getInfoAttr.shapeList[i])?getInfoAttr.shapeList[i][0]:getInfoAttr.shapeList[i];
+                            console.log(currentShape.key==verifyKey)
+//                            console.log(currentShape.key)
+//                            console.log(verifyKey)
+                            if(currentShape.key==verifyKey){
+                                console.log(currentShape)
+                                freeGraphic2.type=currentShape.type;
+                                freeGraphic2.color=currentShape.color;
+                                freeGraphic2.lineWidth=currentShape.lineWidth;
+                                break;
                             }
                         }
                     }
@@ -86,34 +88,29 @@
         }
     }
     window.onkeydown=function(e){
+//        var saveSpliceShape;
         if(e.keyCode==90&&e.ctrlKey){
             for(var i=freeGraphic2.shapeList.length-1;i>=0;i--){
-                try{
-                    if(freeGraphic2.shape.startX!=undefined){
-                        freeGraphic2.shape=new Object();
-                    }
-                    if(freeGraphic2.shapeList[i].key==verifyKey||freeGraphic2.shapeList[i][0].key==verifyKey){
-                        freeGraphic2.shapeList=spliceAttr(freeGraphic2.shapeList,i);
-                        break;
-                    }
+                if(freeGraphic2.shape.startX!=undefined){
+                    freeGraphic2.shape=new Object();
                 }
-                catch(e){
-                    console.log(e)
+                var currentShape1=isArray(freeGraphic2.shapeList[i])?freeGraphic2.shapeList[i][0]:freeGraphic2.shapeList[i];
+                if(currentShape1.key==verifyKey){
+//                    saveSpliceShape=freeGraphic2.shapeList[i];
+                    freeGraphic2.shapeList=spliceAttr(freeGraphic2.shapeList,i);
+                    break;
                 }
             }
             freeGraphic2.shapeListJson.shape=freeGraphic2.shape;
             freeGraphic2.shapeListJson.shapeList=freeGraphic2.shapeList;
+            freeGraphic2.shapeListJson.key=verifyKey;
             freeGraphic2.ws.send(JSON.stringify(freeGraphic2.shapeListJson));
             drawSaveShape(freeGraphic2.shapeListJson,freeGraphic2);
+            freeGraphic2.color=document.getElementById("fontColor").value;
+            freeGraphic2.lineWidth=document.getElementById("fontSize").value;
+            freeGraphic2.type=parseInt(document.getElementById("fontType").value);
         }
     }
-
-//    var html="";
-//    html+='<div class="colorPanel">';
-//    html+=''
-//    var colorPanelComponent={
-//        template:html
-//    }
 
     var vue=new Vue({
         el:'.canvasPanel',
@@ -138,7 +135,6 @@
                         canvas.style.cursor = "crosshair";
                     }else{
                         canvas.style.cursor="url(\"../img/b1.cur\"), pointer";
-                        console.log(canvas.style.cursor)
                     }
                     freeGraphic2.verifyKey=verifyKey;
                     freeGraphic2.type=type;
