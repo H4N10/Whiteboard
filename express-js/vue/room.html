@@ -34,6 +34,15 @@
         <input type="text" id="fontSize" v-model="currentFontSize">
         <input type="text" id="fontType" v-model="currentType">
     </div>
+    <div class="questionPanel">
+        <div class="questionInner">
+            <div class="question">
+                <input type="text" id="questionOutput" v-model="currentQuestion">
+                <span>{{currentQuestion}}</span>
+            </div>
+            <div class="timePanle"></div>
+        </div>
+    </div>
 </div>
 <script type="text/javascript" src="../js/vue.js"></script>
 <script type="text/javascript" src="../js/vue-resource.js"></script>
@@ -59,6 +68,10 @@
             freeGraphic2.ws.onmessage=function(ev){
                 if(ev.data.split("标识").length!=2){
                     var getInfoObject=JSON.parse(ev.data);
+                    if(getInfoObject.question||getInfoObject.question!=null){
+                        if(vue)
+                            vue.currentQuestion=getInfoObject.question;
+                    }
                     if(getInfoObject.shape!=""){
                         var getInfoAttr;
                         if(typeof getInfoObject.shape!="string"){
@@ -123,6 +136,7 @@
             currentFontSize:1,
             currentColor:"#fff",
             currentType:4,
+            currentQuestion:"",
             isOpenEraser:false
         },
         methods:{
