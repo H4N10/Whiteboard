@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>roomList</title>
+    <link  rel="stylesheet" href="../css/public.css">
+</head>
+<body>
+<div class="postTest">
+    <button @click="postTest" style="width:120px;height:60px;line-height:60px;">post</button>
+</div>
+<script type="text/javascript" src="../js/vue.js"></script>
+<script type="text/javascript" src="../js/vue-resource.js"></script>
+<script type="text/javascript">
+    var roomList=new Vue({
+        el: '.postTest',
+        methods:{
+            postTest:function(){
+                this.$http.post(
+                    "../rooms/getRoom",
+                    {
+                        data1:"123",
+                        data2:"222"
+                    }).then(response => {
+                    console.log(123);
+                console.log(response)
+            },response =>{
+                    console.log(response)
+                })
+            }
+        }
+    });
+    console.log(123)
+</script>
+</body>
+</html>
