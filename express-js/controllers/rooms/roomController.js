@@ -7,12 +7,14 @@ var bodyParser = require('body-parser');
 
 var util = require('util');
 var response = require(process.cwd()+'/models/result');
-var db = require(process.cwd()+('/db.js'));
+
+var id = 0;
 var cons = new Array();
 var shapes = new Array();
 var urlencodedParser = bodyParser.urlencoded({ extended: false })
+
 //创建webSocket服务器
-function createServer(port,req) {
+function createServer(port) {
     var WebSocketServer = ws.Server;
     var server = new WebSocketServer({
         port: port,//监听的端口
@@ -26,27 +28,11 @@ function createServer(port,req) {
         console.log("用户连接："+cons.length);
         // console.dir(socket);
         socket.send("标识"+ cons.length);
-
-        var  where={key:{"$eq":port}};
-        var findSet = {shape:1,question:1,_id:0};
-        var mShape = db.findData("rooms",where,findSet,function (res) {
-            console.dir(JSON.stringify(res[0]) );
-
-            if(res && res.length>0)
-                socket.send(JSON.stringify(res[0]));
-        });
-        rooms.addOrRemoveNum(port,true);
-        //转发房间内已有图像
+        if(shapes[port])
+            socket.send(shapes[port]); //转发房间内已有图像
         console.log("标识"+ cons.length);
         socket.on('message', function (message) {
             var msg=JSON.parse(message);
-            //存储图像进数据库
-            var  where={key:{"$eq":port}};
-            var set={$set:{shape:message}};
-            console.dir(msg)
-            db.updateData("rooms",where,set,function (result) {
-                console.log("存储图像结果："+result);
-            })
             shapes[port] = message;
             for (var i = 0; i < cons.length; i++) {
                 if(cons[i]){
@@ -64,51 +50,61 @@ function createServer(port,req) {
                     cons[i] = null;
                  }
              }
-            rooms.addOrRemoveNum(port,false,server);
             console.log("退出连接"+code+":"+reason);
         })
     });
 }
-
+// Array.prototype.remove = function (dx) {
+//     if (isNaN(dx) || dx > this.length) {
+//         return false;
+//     }
+//     for (var i = 0, n = 0; i < this.length; i++) {
+//         if (this[i] != this[dx]) {
+//             this[n++] = this[i];
+//         }
+//     }
+//     this.length -= 1;
+// };
 
 exports.controller = function (app) {
     //获取房间属性
-    // app.use(session({
-    //     secret: 'roomSession',
-    //     cookie: {maxAge: 80000 },  //设置maxAge是80000ms，即80s后session和相应的cookie失效过期
-    //     resave: true,
-    //     saveUninitialized:true
-    // }));
+    app.use(session({
+        secret: 'roomSession',
+        cookie: {maxAge: 80000 },  //设置maxAge是80000ms，即80s后session和相应的cookie失效过期
+        resave: true,
+        saveUninitialized:true
+    }));
     app.use(bodyParser.json()); // for parsing application/json
     app.use(bodyParser.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
     // app.use(multer()); // for parsing multipart/form-data
 
     app.get('/rooms/getRoom', function (req, res) {
-         rooms.createRooms(function (room) {
-             createServer(room.key,req);//创建长连接
-             res.send(response.JsonResult({
-                 data:room
-             }));
-        });
+        var room = rooms.createRooms({
+            id:''+id++,
+            name:'房间'+id,
+            key:id+6000
+    });
+        createServer(id+6000);//创建长连接
+        res.send(response.JsonResult({
+            data:room
+        }));
     });
     //获取所有房间
     app.get('/rooms/getRooms',function (req,res) {
-        rooms.getRooms(function (result) {
-            var jsonResult = response.JsonResult({
-                data:result
-            })
-            res.send(jsonResult);
+        var jsonResult = response.JsonResult({
+            data:rooms.getRooms()
         })
+        res.send(jsonResult);
     });
     //进入房间
     app.post('/rooms/comeIn',urlencodedParser ,function (req,res) {
-        console.log("钥匙钥匙："+req.body.params.key);
+        console.log(req.body.params.key);
         var jsonResult ;
-
         if(req.body.params.key){
-            // res.sendfile('vue/'+req.params.view+'.html');
-            res.redirect('/');
-            res.end();
+            req.session.roomkey= req.body.params.key;
+             jsonResult = response.JsonResult({
+                 data:null
+            })
         }else{
             jsonResult = response.JsonResult({
                 code:201,
@@ -117,15 +113,6 @@ exports.controller = function (app) {
             })
         }
         res.send(jsonResult);
-    })
-    app.post('/rooms/answer',function (req,res) {
-        var jsonResult = response.JsonResult();
-        res.send(jsonResult);
-        if(req.body.params.key){
-            rooms.updateQuestion(req.body.params.key,function (res) {
-                jsonResult.data = res;
-            })
-        }
-        res.send(jsonResult);
+
     })
 }

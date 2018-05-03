@@ -10,12 +10,9 @@ var fs = require('fs');
 var index = require('./routes/index');
 var users = require('./routes/users');
 
-var db = require('./db');
 var app = express();
 //静态资源不拦截
 app.use(express.static('public'));
-var identityKey = 'roomkey';
-
 
 // 读取controllers文件夹下所有js文件
 function readFile(path) {
@@ -32,7 +29,8 @@ function readFile(path) {
 readFile('./controllers');
 
 app.listen(3000, function () {
-    console.log('Example app listening on port 3000!');
+    // console.log(1)
+    // console.log('Example app listening on port 3000!');
 });
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

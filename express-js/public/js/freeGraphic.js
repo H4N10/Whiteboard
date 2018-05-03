@@ -28,7 +28,7 @@ freeGraphic.prototype={
 		var self=this;
         self.canvas.onmousedown=function(e){
             self.isMouseDraw=true;
-            self.mouseDown(e);
+            self.mouseDown(e)
         }
         self.canvas.onmousemove=function(e){
             self.isMouseDraw=true;
@@ -41,19 +41,7 @@ freeGraphic.prototype={
 	},
 	mouseDown:function(e){
 		var self=this;
-        if(document.querySelectorAll(".eraser.active")[0]) {
-            this.color =document.getElementById("canvas").style.getPropertyValue("background-color");
-            this.type = 4;
-            if(document.querySelectorAll(".fontPanel>ul>li.active")[0]){
-                this.lineWidth = document.getElementById("fontSize").value;
-			}else{
-            	this.lineWidth=15;
-			}
-        }else{
-            this.color = document.getElementById("fontColor").value;
-            this.type = parseInt(document.getElementById("fontType").value);
-            this.lineWidth = document.getElementById("fontSize").value;
-		}
+
 	    if(1 == e.which){
 	        this.isClick=true;
 	        this.startX=e.clientX;
@@ -85,7 +73,7 @@ freeGraphic.prototype={
             self.pointArray=new Array();
 		}
         self.shapeListJson={
-            key:verifyKey, //TODO  ，这里加个key 把连接时我返回给你的key传给我
+            key:self.verifyKey, //TODO  ，这里加个key 把连接时我返回给你的key传给我
             shapeList:self.shapeList,
             shape:self.shape,
             pointArray:self.pointArray
@@ -186,7 +174,7 @@ function drawSaveShape(obj,obj2){
     obj2.shapeList=obj.shapeList;
     obj2.pointArray=obj.pointArray;
     obj2.context.clearRect(0,0,obj2.canvas.width,obj2.canvas.height);
-    if(obj.shapeList!=undefined&&obj.shapeList[0]!=undefined&&obj.shapeList.length!=0){
+    if(obj.shapeList[0]!=undefined&&obj.shapeList.length!=0){
         for(var i=0;i<obj.shapeList.length;i++){
             var getInfo=obj.shapeList[i];
             if(isArray(getInfo)){
@@ -201,7 +189,7 @@ function drawSaveShape(obj,obj2){
 			}
         }
     }
-    if(obj.pointArray!=undefined&&obj.pointArray[0]!=undefined&&obj.pointArray.length!=0){
+    if(obj.pointArray[0]!=undefined&&obj.pointArray.length!=0){
         for(var i=0;i<obj.pointArray.length;i++){
             var getInfo=obj.pointArray[i];
             attrChange(getInfo,obj2)
